@@ -27,7 +27,7 @@ Jtoc的目的是在不改变类的设计的前提下完整的测试类的行为�
 当需要测试时，只要使用Jtoc提供的编译器【实际上是一个Java代码的转换器】将源程序
 编译为一个测试工程，并在测试工程中使用JUnit测试工具执行测试即可。过程简图如下图所示：
 
-[http://lh3.ggpht.com/_OATorOD3pb8/Sd6zLlY-q_I/AAAAAAAAAE8/2_Kf7bKG_CI/jtoc_design.JPG]
+[http://lh6.ggpht.com/_OATorOD3pb8/Sd6y3R8marI/AAAAAAAAAE0/u2X-fWDaVOY/jtoc_design_cn.JPG]
 <p><font size=-1>图1  Jtoc 设计结构</font>
 
 <h2>2. Jtoc Annotations</h2>
