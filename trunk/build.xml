@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Jtoc" default="clean" basedir=".">
+	<!-- The directory containing source code and related libraries -->
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+	<property name="javadoc.dir" value="javadoc" />
+	<property name="dist.dir" value="target" />
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Temporary build directories -->
+	<property name="build.dir" value="build" />
+	<property name="build.classes" value="${build.dir}/classes" />
+	<property name="build.lib" value="${build.dir}/lib" />
+
+	<!-- Preparation and cleanups -->
+	<target name="prepare"
+		description="--> Creates the build directories">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.lib}" />
+		<mkdir dir="${build.classes}" />
+	</target>
+
+	<target name="clean" description="--> Removes all generated files.">
+		<delete dir="${build.dir}" />
+		<delete dir="${javadoc.dir}"/>
+	</target>
+
+	<!-- Compile the application -->
+	<target name="compile" depends="prepare"
+		description="--> Compiles all source code.">
+		<javac srcdir="${src.dir}" destdir="${build.classes}" debug="${debug.flag}"
+			deprecation="on">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile"
+		description="--> Generates jar file in the 'dist' directory.">
+		<!-- Exclude unit tests from the final JAR file -->
+		<jar jarfile="${build.lib}/jtoc.jar" basedir="${build.classes}" />
+	</target>
+
+	<target name="javadoc"
+		description="--> Generates the API documentation.">
+		<mkdir dir="${javadoc.dir}" />
+		<javadoc packagenames="org.jtoc.*" sourcepath="${src.dir}"
+			destdir="${javadoc.dir}" author="true" version="true" use="true">
+			<classpath refid="classpath" />
+		</javadoc>
+	</target>
+</project> 
