@@ -1,4 +1,4 @@
-#summary the introduction page of Jtoc.
+#summary An introductory page for Jtoc.
 
 = Introduction =
 
