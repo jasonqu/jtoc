@@ -1,4 +1,5 @@
 #summary An introductory page for Jtoc.
+#labels Jtoc
 
 = Introduction =
 
@@ -152,8 +153,8 @@ public class Example {
 
 <p>The Post annotation also supports the three optional parameters mentioned in the Pre annotation's
 introduction, and these optional parameters are basiclly the same as those above, Except:
-	#testMethod's default value is "method's name"+"PostCheck"
-	#parameters's default value if "method's return value"+"method's parameters" if the return type is not "void"; or else the "method's parameters" would be assigned as the default value.
+	# testMethod's default value is "method's name"+"PostCheck"
+	# parameters's default value if "method's return value"+"method's parameters" if the return type is not "void"; or else the "method's parameters" would be assigned as the default value.
 
 <h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.InnerTest</h3>
 <p>InnerTest annotation's target is "TYPE", it tells Jtoc that the class to which
@@ -194,8 +195,8 @@ public class Example {
 </p>
 <p>
 The design rules of the inner test class are:
-	#In the inner test class, the following fields should be used for assertions readonly: any field in the tested class and any input parameter.
-	#For the method with return type that is not "void", the return result of this method must be inputed to the post check method as the 1st parameter, and the post check method should return it without any change.
+	# In the inner test class, the following fields should be used for assertions readonly: any field in the tested class and any input parameter.
+	# For the method with return type that is not "void", the return result of this method must be inputed to the post check method as the 1st parameter, and the post check method should return it without any change.
 
 If the two rules above are not conformed with, the classes in the test project Jtoc generated
 may not function the same as the original project.
