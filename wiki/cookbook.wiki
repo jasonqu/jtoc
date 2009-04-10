@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary the introduction page of Jtoc.
 
 = Introduction =
 
@@ -49,13 +49,13 @@ just use Jtoc Code Convertor to compile the project to a new test project and us
 JUnit test tools to run the tests. the process is depicted in Figure 1:
 
 [http://lh3.ggpht.com/_OATorOD3pb8/Sd6zLlY-q_I/AAAAAAAAAE8/2_Kf7bKG_CI/jtoc_design.JPG]
-<p><font size=-1>Figure 1 : Jtoc design structure</font></center> 
+<p><font size=-1>Figure 1 : Jtoc design structure</font>
 
 <h2>2. Jtoc Annotations</h2>
 <p>Jtoc provides 3 annotations, which are 'Pre', 'Post' and 'InnerTest'. Their retention
 policy are all 'SOURCE', so the user should't worry the problem of runtime resource occupation.
 Here is the introduction of these annotations:
-<h3><img SRC="at.gif">org.jtoc.Pre</h3>
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.Pre</h3>
 <p>Pre annotation's target is "method", it tells Jtoc that the method to which
 it is attached should have a pre checking invocation. A simple Pre invocation 
 looks like this:
