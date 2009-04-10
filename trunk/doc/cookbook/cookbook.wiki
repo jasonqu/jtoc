@@ -1,0 +1,491 @@
+#summary An introductory page for Jtoc.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+=Jtoc Cookbook=
+
+<p>Guodong Qu</p>
+
+<hr WIDTH="100%">
+<br>
+Notice: when you read this article, the author suppose that you had
+already been familiar with JUnit, if not, please check
+<a href="http://www.junit.org">here</a> first.
+<h2>Introduction</h2>
+You may have already heard about the concept of 
+<a href="http://en.wikipedia.org/wiki/Design_by_contract">"Programming by contract"</a>,
+which uses runtime assertions to prescribe the behavior of programs. 
+Although Java provide the keyword 'assert' to write runtime assertions, Programmers
+found it insufficient and developed over 10 kinds of libraries for 
+"Programming by contract" such as Contract4J, jContractor,
+Java Modeling Language (JML) etc [check 
+<a href="http://en.wikipedia.org/wiki/Design_by_contract#Languages_with_third-party_support">here</a>
+for a complete list].
+
+<p>Jtoc is also an application of this kind; it focuses on
+<font color="green">Completely</font> test the contracts
+<font color="green">Without</font> changing the original design of the class,
+while the mentioned projects have to put some constraints on the original code
+or hard to completely test the original code's behavior; with this feature,
+it's possible to put test case auto-generation into practical usage.
+Jtoc supports Unit testing, where the written JUnit tests could be used in the 
+test-project Jtoc generated without any change.
+
+<p>The design of the Jtoc is easy to understand, Jtoc provides 3 annotations
+and use Java's Innerclass as the implementation method of the contracts.
+Programmer could use these annotations to annotated his code, and implement
+the pre and post assertions in the inner test classes. When need test,
+just use Jtoc Code Convertor to compile the project to a new test project and use the
+JUnit test tools to run the tests. the process is depicted in Figure 1:
+
+[http://lh3.ggpht.com/_OATorOD3pb8/Sd6zLlY-q_I/AAAAAAAAAE8/2_Kf7bKG_CI/jtoc_design.JPG]
+<p><font size=-1>Figure 1 : Jtoc design structure</font>
+
+<h2>2. Jtoc Annotations</h2>
+<p>Jtoc provides 3 annotations, which are 'Pre', 'Post' and 'InnerTest'. Their retention
+policy are all 'SOURCE', so the user should't worry the problem of runtime resource occupation.
+Here is the introduction of these annotations:
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.Pre</h3>
+<p>Pre annotation's target is "method", it tells Jtoc that the method to which
+it is attached should have a pre checking invocation. A simple Pre invocation 
+looks like this:
+</p>
+
+{{{
+code 1:
+public class Example {
+   @Pre
+   public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+   }
+}
+}}}
+</p>
+
+<p>Then the converted source file would contain code like this in code 2:
+{{{
+code 2:
+public class Example {
+   public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      innerTest.methodPreCheck(para1, ..., paraN);
+      ...
+   }
+}
+}}}
+</p>
+
+<p>The Pre annotation supports three optional parameters, namely testObject, testMethod and parameters.
+Their types are the same -- "String"; they are used to store the inner test object's name, 
+the test method's name and the test method's input parameters respectively. If they are not specified,
+then their default value "innerTest", "method's name"+"PreCheck" and "method's parameters" would be assigned.
+For instance, if the "Pre" annotation in code 1 is changed to 
+"@Pre(testObject = "test", testMethod = "commenTest", parameters = "para1, paraK")", 
+then the converted code would be like the code showed in code 3 rather than the default values depicted in code 2:
+{{{
+code 3:
+public class Example {
+   public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      <b><font color="blue">test.commenTest(para1, paraK);</font></b>
+      ...
+   }
+}
+}}}
+</p>
+
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.Post</h3>
+<p>Post annotation's target is "method", it tells Jtoc that the method to which
+it is attached should have a post checking invocation. A simple Post invocation 
+looks like this:
+</p>
+{{{
+code 4:
+public class Example {
+   <b>@Post</b> 
+   public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      return;
+      ...
+   }
+
+   <b>@Post</b> 
+   public returnType method2(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      return expr1;
+      ...
+      return exprK;
+   }
+}
+}}}
+</p>
+
+<p>Then the converted source file would contain code like this in code 5:
+{{{
+code 5:
+public class Example {
+   public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      <b><font color="blue">{innerTest.method1PostCheck(para1, ..., paraN);return;}</font></b>
+      ...
+      <b><font color="blue">innerTest.method1PostCheck(para1, ..., paraN);</font></b>
+   }
+   
+   public returnType method2(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      <b><font color="blue">return innerTest.method2PostCheck((expr1), para1, ..., paraN);</font></b>
+      ...
+      <b><font color="blue">return innerTest.method2PostCheck((exprK), para1, ..., paraN);</font></b>
+   }
+   <b><font color="green">//which need the innerTest method return the 1st input without any change</font></b>
+}
+}}}
+</p>
+
+<p>The Post annotation also supports the three optional parameters mentioned in the Pre annotation's
+introduction, and these optional parameters are basiclly the same as those above, Except:
+<ol>
+	<li>testMethod's default value is "method's name"+"PostCheck"
+	<li>parameters's default value if "method's return value"+"method's parameters" if the return type is not
+	"void"; or else the "method's parameters" would be assigned as the default value.
+</ol>
+
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.InnerTest</h3>
+<p>InnerTest annotation's target is "type", it tells Jtoc that the class to which
+ it is attached would have the InnerTests initialized. A simple InnerTest example
+looks like this:
+{{{
+code 6:
+<b>@InnerTest</b>
+public class Example {
+      ...
+}
+}}}
+</p>
+
+<p>Then the converted source file would contain code like this in code 7:
+{{{
+code 7:
+public class Example {
+      ...
+      <b><font color="blue">InnerTest innerTest = new InnerTest();</font></b>
+}
+}}}
+</p>
+
+<p>The InnerTest annotation supports two optional parameters, "classNames" and "objectNames".
+they respectively specify Inner Test Classes' names and objects' names whose default values
+are "InnerTest" and "innerTest". For instance, if the InnerTest annotation in code 6 is changed to 
+"@InnerTest(classNames = {"InnerTest1", "InnerTest2"}, objectNames = {"test1", "test2"})",
+then the converted code would be like the code showed in code 8:
+{{{
+code 8:
+public class Example {
+      ...
+      <b><font color="blue">InnerTest1 test1 = new InnerTest1();</font></b>
+      <b><font color="blue">InnerTest2 test2 = new InnerTest2();</font></b>
+}
+}}}
+</p>
+<p>
+The design rules of the inner test class are:
+<ol>
+	<li>In the inner test class, the following fields should be used for assertions readonly: 
+	any field in the tested class and any input parameter.
+	<li>For the method with return type that is not "void", the return result of this method
+	must be inputed to the post check method as the 1st parameter, and the post 
+	check method should return it without any change.
+</ol>
+If the two rules above are not conformed with, the classes in the test project Jtoc generated
+may not function the same as the original project.
+</p>
+
+<h2>3. A Example</h2>
+<p>Allow me use the Money example in JUnit to show the usage of Jtoc. Assume the content
+of the "Money.java" is:
+{{{
+Money.java
+import static org.junit.Assert.*;
+import org.jtoc.*;
+<font color="blue">@InnerTest</font>
+public class Money{
+	private final int fAmount;
+	private final String fCurrency;
+	public Money(int amount, String currency) {
+		fAmount= amount;
+		fCurrency= currency;
+	}
+	public int amount() {
+		return fAmount;
+	}
+	public String currency() {
+		return fCurrency;
+	}
+	<font color="blue">@Post</font>
+	public Money multiply(int factor) {
+		return new Money(amount()*factor, currency());
+	}
+	<font color="blue">@Post</font>
+	public Money negate() {
+		return new Money(-amount(), currency());
+	}
+	<font color="blue">@Pre(testObject = "InnerTestStatic")</font>
+	<font color="blue">@Post(testObject = "InnerTestStatic")</font>
+	public static Money getMoney(int amount, String currency){
+		return new Money(amount, currency);
+	}
+
+	private class InnerTest {
+		public Money multiplyPostCheck(Money result, int factor){
+			assertEquals(currency(), result.currency());
+			assertEquals(amount()*factor, result.amount());
+			return result;
+		}
+		
+		public Money negatePostCheck(Money result){
+			return multiplyPostCheck(result, -1);
+		}
+	}
+	
+	static class InnerTestStatic{
+		public static void getMoneyPreCheck(int amount, String currency) {
+			assertNotNull(currency);
+		}
+	
+		public static Money getMoneyPostCheck(Money result, int amount,	String currency) {
+			assertEquals(currency, result.currency());
+			assertEquals(amount, result.amount());
+			return result;
+		}
+	}
+}
+}}}
+<p>As the code showed above, the innerclasses - InnerTest and InnerTestStatic, have
+implemented the contracts; the method to be tested are add with some Jtoc annotations.
+the converted code would be like the code showed in below[with some repeated code omitted]:
+{{{
+import static org.junit.Assert.*;
+import org.jtoc.*;
+public class Money{
+	private final int fAmount;
+	private final String fCurrency;
+	public Money(int amount, String currency) {
+		fAmount= amount;
+		fCurrency= currency;
+	}
+	public int amount() {
+		return fAmount;
+	}
+	public String currency() {
+		return fCurrency;
+	}
+	public Money multiply(int factor) {
+		<font color="blue">return innerTest.multiplyPostCheck(( new Money(amount()*factor, currency())), factor);</font>
+	}
+	public Money negate() {
+		<font color="blue">return innerTest.negatePostCheck(( new Money(-amount(), currency())));</font>
+	}
+	public static Money getMoney(int amount, String currency){
+		<font color="blue">InnerTestStatic.getMoneyPreCheck(amount, currency);
+		return InnerTestStatic.getMoneyPostCheck(( new Money(amount, currency)), amount, currency);</font>
+	}
+
+	private class InnerTest { ... }
+	static class InnerTestStatic { ... }
+
+	<font color="blue">InnerTest innerTest = new InnerTest();</font>
+}
+}}}
+<p>As the converted code showed above, the method to be tested successfully called
+corresponding test methods; notice that the "testObject" of the post annotation in 
+"getMoney" was set to "InnerTestStatic", and the static test methods had been successfully
+called. By the way, the "multiplyPostCheck" test method had been called by "negatePostCheck"
+which could show that it is easier to maintain test code because of the reuse of test code.
+
+<h2>4. Rules and Restrictions</h2>
+Stephen Hawking once said this joke for his book "Space and Time Warps": 
+"Someone told me that each equation I included in the book would halve the sales."
+While for the relation of library and programmers, it might not be a joke but a rule:
+"each restriction the library included halve the potential users."
+However, for the code's readability and convenience in Jtoc's implementation[mostly the latter
+reason :)], I have to list the following rules and restrictions, hope their number
+would reduce in latter releases:
+<p>
+The design rules of the inner test class have already been introduced; however, I would
+repeat them since they are important: the test methods must never change any data in 
+original classes; the return value of the test method has to be used as the 1st parameter in the 
+post-check method and returned without any change.
+</p>
+</p>
+<p>Besides the two rules, there still are four restrictions which would cause
+converting problems if violated:
+</p>
+<h4>[1]. the line with Jtoc annotation should not have other code. Because the generated
+code would delete these lines.</h4>
+{{{
+<font color="red">@InnerTest</font> @AnotherAnno
+public class Example{
+	<font color="red">@Post</font> @Override
+	public void method1(int factor) {
+		...
+	}<font color="red">@pre @post</font>
+	public int method2() {
+		...
+	}
+	<font color="red">@post</font>public void method3() {
+		...
+	}
+}
+}}}
+The right format is: 
+{{{
+<font color="blue">@InnerTest</font>
+@AnotherAnno
+public class Example{
+	<font color="blue">@Post</font>
+	@Override
+	public void method1(int factor) {
+		...
+	}
+	<font color="blue">@pre @post</font>
+	public int method2() {
+		...
+	}
+	<font color="blue">@post</font>
+	public void method3() {
+		...
+	}
+}
+}}}
+<h4>[2]. For the void method with Post annotation, the return point: last '}' of the 
+method body and the "return;" statement must be the last non-blank characters in the line.
+"non-blank characters" means [ \t\r\n\v\f] in regular expression. 
+</h4>
+{{{
+@InnerTest
+public class Example{
+	@Post
+	public void method1(int factor) {
+		...
+	<font color="red">}</font><font color="green">// End of method1</font>
+	@pre @post
+	public void method2() {
+		if(b == null)
+			<font color="red">return;</font> else
+		...
+		if(shouldReturn){
+			<font color="red">return;}</font>
+		else{
+			...
+		}
+	<font color="red">}</font>private int method3(){
+		...
+	}
+}
+}}}
+The right format is:
+{{{
+@InnerTest
+public class Example{
+	@Post
+	public void method1(int factor) {
+		...
+	<font color="blue">}</font>
+	@pre @post
+	public void method2() {
+		if(b == null)
+			<font color="blue">return;</font>
+		else
+		...
+		if(shouldReturn){
+			<font color="blue">return;</font>
+		}
+		else{
+			...
+		}
+	<font color="blue">}</font>
+	private int method3(){
+		...
+	}
+}
+}}}
+<h4>[3]. For the non-void method with Post annotation, the ';' of the return statement
+must be the last non-blank characters in the line, in which the statement could in multi-lines.</h4>
+{{{
+@InnerTest
+public class Example{
+	@post
+	public ActionListener method1() {
+		if(shouldReturnListener)
+		return new ActionListener(){
+			...
+			<font color="red">};</font> else
+			return null;
+	}
+	@pre @post
+	public int method2(int a, int b) {
+		if(b < 0) return a-b;
+		else<font color="red"> return a+b;</font>}
+}
+}}}
+The right format is:
+{{{
+@InnerTest
+public class Example{
+	@post
+	public ActionListener method1() {
+		if(shouldReturnListener)
+		return new ActionListener(){
+			...
+			<font color="blue">};</font>
+		else
+			return null;
+	}
+	@pre @post
+	public int method2(int a, int b) {
+		if(b < 0) return a-b;
+		else<font color="blue"> return a+b;</font>
+	}
+}
+}}}
+<h4>[4]. Do not annotate method with only one line, which means the '{' and '}'
+of the method body are in the same line.</h4>
+{{{
+@InnerTest
+public class Example{
+	@pre
+	public void setNumber(int number) 
+	<font color="red">{ this.number = number; }</font>
+	@pre @post
+	public int getNumber() 
+	<font color="red">{ return number; }</font>
+}
+}}}
+The right format is:
+{{{
+@InnerTest
+public class Example{
+	@pre
+	public void setNumber(int number)<font color="blue">{
+		this.number = number; }</font>
+	@pre @post
+	public int getNumber()
+	<font color="blue">{
+		return number;
+	}</font>
+}
+}}}
+<p>In fact, you would find these restrictions are simple, and comply with the 
+Java's readability specification, so maybe you should get used to these:-)
+<h2>5. Conclusions</h2>
+<p>Hope you enjoy your Jtoc journey, good luck!
+<hr WIDTH="100%">
+</body>
