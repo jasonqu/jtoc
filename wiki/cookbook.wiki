@@ -95,7 +95,7 @@ then the converted code would be like the code showed in code 3 rather than the 
 code 3:
 public class Example {
    public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
-      <b><font color="blue">test.commenTest(para1, paraK);</font></b>
+      test.commenTest(para1, paraK);
       ...
    }
 }
@@ -110,14 +110,14 @@ looks like this:
 {{{
 code 4:
 public class Example {
-   <b>@Post</b> 
+   @Post
    public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
       return;
       ...
    }
 
-   <b>@Post</b> 
+   @Post 
    public returnType method2(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
       return expr1;
@@ -134,29 +134,26 @@ code 5:
 public class Example {
    public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
-      <b><font color="blue">{innerTest.method1PostCheck(para1, ..., paraN);return;}</font></b>
+      {innerTest.method1PostCheck(para1, ..., paraN);return;}
       ...
-      <b><font color="blue">innerTest.method1PostCheck(para1, ..., paraN);</font></b>
+      innerTest.method1PostCheck(para1, ..., paraN);
    }
    
    public returnType method2(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
-      <b><font color="blue">return innerTest.method2PostCheck((expr1), para1, ..., paraN);</font></b>
+      return innerTest.method2PostCheck((expr1), para1, ..., paraN);
       ...
-      <b><font color="blue">return innerTest.method2PostCheck((exprK), para1, ..., paraN);</font></b>
+      return innerTest.method2PostCheck((exprK), para1, ..., paraN);
    }
-   <b><font color="green">//which need the innerTest method return the 1st input without any change</font></b>
+  //which need the innerTest method return the 1st input without any change
 }
 }}}
 </p>
 
 <p>The Post annotation also supports the three optional parameters mentioned in the Pre annotation's
 introduction, and these optional parameters are basiclly the same as those above, Except:
-<ol>
-	<li>testMethod's default value is "method's name"+"PostCheck"
-	<li>parameters's default value if "method's return value"+"method's parameters" if the return type is not
-	"void"; or else the "method's parameters" would be assigned as the default value.
-</ol>
+	#testMethod's default value is "method's name"+"PostCheck"
+	#parameters's default value if "method's return value"+"method's parameters" if the return type is not "void"; or else the "method's parameters" would be assigned as the default value.
 
 <h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.InnerTest</h3>
 <p>InnerTest annotation's target is "TYPE", it tells Jtoc that the class to which
@@ -164,7 +161,7 @@ introduction, and these optional parameters are basiclly the same as those above
 looks like this:
 {{{
 code 6:
-<b>@InnerTest</b>
+@InnerTest
 public class Example {
       ...
 }
@@ -176,7 +173,7 @@ public class Example {
 code 7:
 public class Example {
       ...
-      <b><font color="blue">InnerTest innerTest = new InnerTest();</font></b>
+      InnerTest innerTest = new InnerTest();
 }
 }}}
 </p>
@@ -190,20 +187,16 @@ then the converted code would be like the code showed in code 8:
 code 8:
 public class Example {
       ...
-      <b><font color="blue">InnerTest1 test1 = new InnerTest1();</font></b>
-      <b><font color="blue">InnerTest2 test2 = new InnerTest2();</font></b>
+      InnerTest1 test1 = new InnerTest1();
+      InnerTest2 test2 = new InnerTest2();
 }
 }}}
 </p>
 <p>
 The design rules of the inner test class are:
-<ol>
-	<li>In the inner test class, the following fields should be used for assertions readonly: 
-	any field in the tested class and any input parameter.
-	<li>For the method with return type that is not "void", the return result of this method
-	must be inputed to the post check method as the 1st parameter, and the post 
-	check method should return it without any change.
-</ol>
+	#In the inner test class, the following fields should be used for assertions readonly: any field in the tested class and any input parameter.
+	#For the method with return type that is not "void", the return result of this method must be inputed to the post check method as the 1st parameter, and the post check method should return it without any change.
+
 If the two rules above are not conformed with, the classes in the test project Jtoc generated
 may not function the same as the original project.
 </p>
@@ -215,7 +208,7 @@ of the "Money.java" is:
 Money.java
 import static org.junit.Assert.*;
 import org.jtoc.*;
-<font color="blue">@InnerTest</font>
+@InnerTest
 public class Money{
 	private final int fAmount;
 	private final String fCurrency;
@@ -229,16 +222,16 @@ public class Money{
 	public String currency() {
 		return fCurrency;
 	}
-	<font color="blue">@Post</font>
+	@Post
 	public Money multiply(int factor) {
 		return new Money(amount()*factor, currency());
 	}
-	<font color="blue">@Post</font>
+	@Post
 	public Money negate() {
 		return new Money(-amount(), currency());
 	}
-	<font color="blue">@Pre(testObject = "InnerTestStatic")</font>
-	<font color="blue">@Post(testObject = "InnerTestStatic")</font>
+	@Pre(testObject = "InnerTestStatic")
+	@Post(testObject = "InnerTestStatic")
 	public static Money getMoney(int amount, String currency){
 		return new Money(amount, currency);
 	}
@@ -288,14 +281,14 @@ public class Money{
 		return fCurrency;
 	}
 	public Money multiply(int factor) {
-		<font color="blue">return innerTest.multiplyPostCheck(( new Money(amount()*factor, currency())), factor);</font>
+		return innerTest.multiplyPostCheck(( new Money(amount()*factor, currency())), factor);
 	}
 	public Money negate() {
-		<font color="blue">return innerTest.negatePostCheck(( new Money(-amount(), currency())));</font>
+		return innerTest.negatePostCheck(( new Money(-amount(), currency())));
 	}
 	public static Money getMoney(int amount, String currency){
-		<font color="blue">InnerTestStatic.getMoneyPreCheck(amount, currency);
-		return InnerTestStatic.getMoneyPostCheck(( new Money(amount, currency)), amount, currency);</font>
+		InnerTestStatic.getMoneyPreCheck(amount, currency);
+		return InnerTestStatic.getMoneyPostCheck(( new Money(amount, currency)), amount, currency);
 	}
 
 	private class InnerTest { ... }
