@@ -1,18 +1,6 @@
 #summary An introductory page for Jtoc.
 #labels Jtoc
 
-= Introduction =
-
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-
 =Jtoc Cookbook=
 
 <p>Guodong Qu</p>
@@ -157,8 +145,8 @@ introduction, and these optional parameters are basiclly the same as those above
 	# parameters's default value if "method's return value"+"method's parameters" if the return type is not "void"; or else the "method's parameters" would be assigned as the default value.
 
 <h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.InnerTest</h3>
-<p>InnerTest annotation's target is "TYPE", it tells Jtoc that the class to which
- it is attached would have the InnerTests initialized. A simple Post invocation 
+<p>InnerTest annotation's target is "type", it tells Jtoc that the class to which
+ it is attached would have the InnerTest classes initialized. A simple InnerTest Example
 looks like this:
 {{{
 code 6:
@@ -295,7 +283,7 @@ public class Money{
 	private class InnerTest { ... }
 	static class InnerTestStatic { ... }
 
-	<font color="blue">InnerTest innerTest = new InnerTest();</font>
+	InnerTest innerTest = new InnerTest();
 }
 }}}
 <p>As the converted code showed above, the method to be tested successfully called
@@ -322,44 +310,44 @@ post-check method and returned without any change.
 <p>Besides the two rules, there still are four restrictions which would cause
 converting problems if violated:
 </p>
-<h4>[1]. the line with Jtoc annotation should not have other code. Because the generated
+<h4>(1). the line with Jtoc annotation should not have other code. Because the generated
 code would delete these lines.</h4>
 {{{
-<font color="red">@InnerTest</font> @AnotherAnno
+@InnerTest @AnotherAnno
 public class Example{
-	<font color="red">@Post</font> @Override
+	@Post @Override
 	public void method1(int factor) {
 		...
-	}<font color="red">@pre @post</font>
+	}@pre @post
 	public int method2() {
 		...
 	}
-	<font color="red">@post</font>public void method3() {
+	@post public void method3() {
 		...
 	}
 }
 }}}
 The right format is: 
 {{{
-<font color="blue">@InnerTest</font>
+@InnerTest
 @AnotherAnno
 public class Example{
-	<font color="blue">@Post</font>
+	@Post
 	@Override
 	public void method1(int factor) {
 		...
 	}
-	<font color="blue">@pre @post</font>
+	@pre @post
 	public int method2() {
 		...
 	}
-	<font color="blue">@post</font>
+	@post
 	public void method3() {
 		...
 	}
 }
 }}}
-<h4>[2]. For the void method with Post annotation, the return point: last '}' of the 
+<h4>(2). For the void method with Post annotation, the return point: last '}' of the 
 method body and the "return;" statement must be the last non-blank characters in the line.
 "non-blank characters" means [ \t\r\n\v\f] in regular expression. 
 </h4>
@@ -369,18 +357,18 @@ public class Example{
 	@Post
 	public void method1(int factor) {
 		...
-	<font color="red">}</font><font color="green">// End of method1</font>
+	}// End of method1
 	@pre @post
 	public void method2() {
 		if(b == null)
-			<font color="red">return;</font> else
+			return; else
 		...
 		if(shouldReturn){
-			<font color="red">return;}</font>
+			return;}
 		else{
 			...
 		}
-	<font color="red">}</font>private int method3(){
+	}private int method3(){
 		...
 	}
 }
@@ -392,26 +380,26 @@ public class Example{
 	@Post
 	public void method1(int factor) {
 		...
-	<font color="blue">}</font>
+	}
 	@pre @post
 	public void method2() {
 		if(b == null)
-			<font color="blue">return;</font>
+			return;
 		else
 		...
 		if(shouldReturn){
-			<font color="blue">return;</font>
+			return;
 		}
 		else{
 			...
 		}
-	<font color="blue">}</font>
+	}
 	private int method3(){
 		...
 	}
 }
 }}}
-<h4>[3]. For the non-void method with Post annotation, the ';' of the return statement
+<h4>(3). For the non-void method with Post annotation, the ';' of the return statement
 must be the last non-blank characters in the line, in which the statement could in multi-lines.</h4>
 {{{
 @InnerTest
@@ -421,13 +409,13 @@ public class Example{
 		if(shouldReturnListener)
 		return new ActionListener(){
 			...
-			<font color="red">};</font> else
+			}; else
 			return null;
 	}
 	@pre @post
 	public int method2(int a, int b) {
 		if(b < 0) return a-b;
-		else<font color="red"> return a+b;</font>}
+		else return a+b;}
 }
 }}}
 The right format is:
@@ -439,28 +427,28 @@ public class Example{
 		if(shouldReturnListener)
 		return new ActionListener(){
 			...
-			<font color="blue">};</font>
+			};
 		else
 			return null;
 	}
 	@pre @post
 	public int method2(int a, int b) {
 		if(b < 0) return a-b;
-		else<font color="blue"> return a+b;</font>
+		else return a+b;
 	}
 }
 }}}
-<h4>[4]. Do not annotate method with only one line, which means the '{' and '}'
+<h4>(4). Do not annotate method with only one line, which means the '{' and '}'
 of the method body are in the same line.</h4>
 {{{
 @InnerTest
 public class Example{
 	@pre
 	public void setNumber(int number) 
-	<font color="red">{ this.number = number; }</font>
+	{ this.number = number; }
 	@pre @post
 	public int getNumber() 
-	<font color="red">{ return number; }</font>
+	{ return number; }
 }
 }}}
 The right format is:
@@ -468,13 +456,13 @@ The right format is:
 @InnerTest
 public class Example{
 	@pre
-	public void setNumber(int number)<font color="blue">{
-		this.number = number; }</font>
+	public void setNumber(int number){
+		this.number = number; }
 	@pre @post
 	public int getNumber()
-	<font color="blue">{
+	{
 		return number;
-	}</font>
+	}
 }
 }}}
 <p>In fact, you would find these restrictions are simple, and comply with the 
