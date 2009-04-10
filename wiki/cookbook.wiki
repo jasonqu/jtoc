@@ -64,7 +64,7 @@ looks like this:
 {{{
 code 1:
 public class Example {
-   <b>@Pre</b> 
+   @Pre
    public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
    }
@@ -77,7 +77,7 @@ public class Example {
 code 2:
 public class Example {
    public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
-      <b><font color="blue">innerTest.methodPreCheck(para1, ..., paraN);</font></b>
+      innerTest.methodPreCheck(para1, ..., paraN);
       ...
    }
 }
@@ -85,11 +85,11 @@ public class Example {
 </p>
 
 <p>The Pre annotation supports three optional parameters, namely testObject, testMethod and parameters.
-Their types are the same --<code>String</code>; they are used to store the inner test object's name, 
+Their types are the same -- "String"; they are used to store the inner test object's name, 
 the test method's name and the test method's input parameters respectively. If they are not specified,
 then their default value "innerTest", "method's name"+"PreCheck" and "method's parameters" would be assigned.
-For instance, if the <code>Pre</code> annotation in code 1 is changed to 
-<code>@Pre(testObject = "test", testMethod = "commenTest", parameters = "para1, paraK")</code>, 
+For instance, if the "Pre" annotation in code 1 is changed to 
+"@Pre(testObject = "test", testMethod = "commenTest", parameters = "para1, paraK")", 
 then the converted code would be like the code showed in code 3 rather than the default values depicted in code 2:
 {{{
 code 3:
@@ -184,7 +184,7 @@ public class Example {
 <p>The InnerTest annotation supports two optional parameters, "classNames" and "objectNames".
 they respectively specify Inner Test Classes' names and objects' names whose default values
 are "InnerTest" and "innerTest". For instance, if the InnerTest annotation in code 6 is changed to 
-<code>@InnerTest(classNames = {"InnerTest1", "InnerTest2"}, objectNames = {"test1", "test2"})</code>,
+"@InnerTest(classNames = {"InnerTest1", "InnerTest2"}, objectNames = {"test1", "test2"})",
 then the converted code would be like the code showed in code 8:
 {{{
 code 8:
