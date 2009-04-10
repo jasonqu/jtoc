@@ -1,5 +1,5 @@
 #summary An introductory page for Jtoc.
-#labels Jtoc
+#labels Jtoc,Featured,Java
 
 =Jtoc Cookbook=
 
@@ -470,4 +470,3 @@ Java's readability specification, so maybe you should get used to these:-)
 <h2>5. Conclusions</h2>
 <p>Hope you enjoy your Jtoc journey, good luck!
 <hr WIDTH="100%">
-</body>
