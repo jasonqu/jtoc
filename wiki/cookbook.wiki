@@ -61,19 +61,19 @@ it is attached should have a pre checking invocation. A simple Pre invocation
 looks like this:
 </p>
 
-<pre>
+{{{
 code 1:
 public class Example {
-   <b>&#064;Pre</b> 
+   <b>@Pre</b> 
    public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
    }
 }
-</pre>
+}}}
 </p>
 
 <p>Then the converted source file would contain code like this in code 2:
-<pre>
+{{{
 code 2:
 public class Example {
    public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
@@ -81,7 +81,7 @@ public class Example {
       ...
    }
 }
-</pre>
+}}}
 </p>
 
 <p>The Pre annotation supports three optional parameters, namely testObject, testMethod and parameters.
@@ -89,9 +89,9 @@ Their types are the same --<code>String</code>; they are used to store the inner
 the test method's name and the test method's input parameters respectively. If they are not specified,
 then their default value "innerTest", "method's name"+"PreCheck" and "method's parameters" would be assigned.
 For instance, if the <code>Pre</code> annotation in code 1 is changed to 
-<code>&#064;Pre(testObject = "test", testMethod = "commenTest", parameters = "para1, paraK")</code>, 
+<code>@Pre(testObject = "test", testMethod = "commenTest", parameters = "para1, paraK")</code>, 
 then the converted code would be like the code showed in code 3 rather than the default values depicted in code 2:
-<pre>
+{{{
 code 3:
 public class Example {
    public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
@@ -99,25 +99,25 @@ public class Example {
       ...
    }
 }
-</pre>
+}}}
 </p>
 
-<h3><img SRC="at.gif">org.jtoc.Post</h3>
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.Post</h3>
 <p>Post annotation's target is "method", it tells Jtoc that the method to which
 it is attached should have a post checking invocation. A simple Post invocation 
 looks like this:
 </p>
-<pre>
+{{{
 code 4:
 public class Example {
-   <b>&#064;Post</b> 
+   <b>@Post</b> 
    public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
       return;
       ...
    }
 
-   <b>&#064;Post</b> 
+   <b>@Post</b> 
    public returnType method2(ParameterType1 para1, ..., ParameterTypeN paraN) {
       ...
       return expr1;
@@ -125,11 +125,11 @@ public class Example {
       return exprK;
    }
 }
-</pre>
+}}}
 </p>
 
 <p>Then the converted source file would contain code like this in code 5:
-<pre>
+{{{
 code 5:
 public class Example {
    public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
@@ -147,7 +147,7 @@ public class Example {
    }
    <b><font color="green">//which need the innerTest method return the 1st input without any change</font></b>
 }
-</pre>
+}}}
 </p>
 
 <p>The Post annotation also supports the three optional parameters mentioned in the Pre annotation's
@@ -158,42 +158,42 @@ introduction, and these optional parameters are basiclly the same as those above
 	"void"; or else the "method's parameters" would be assigned as the default value.
 </ol>
 
-<h3><img SRC="at.gif">org.jtoc.InnerTest</h3>
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.InnerTest</h3>
 <p>InnerTest annotation's target is "TYPE", it tells Jtoc that the class to which
  it is attached would have the InnerTests initialized. A simple Post invocation 
 looks like this:
-<pre>
+{{{
 code 6:
-<b>&#064;InnerTest</b>
+<b>@InnerTest</b>
 public class Example {
       ...
 }
-</pre>
+}}}
 </p>
 
 <p>Then the converted source file would contain code like this in code 7:
-<pre>
+{{{
 code 7:
 public class Example {
       ...
       <b><font color="blue">InnerTest innerTest = new InnerTest();</font></b>
 }
-</pre>
+}}}
 </p>
 
 <p>The InnerTest annotation supports two optional parameters, "classNames" and "objectNames".
 they respectively specify Inner Test Classes' names and objects' names whose default values
 are "InnerTest" and "innerTest". For instance, if the InnerTest annotation in code 6 is changed to 
-<code>&#064;InnerTest(classNames = {"InnerTest1", "InnerTest2"}, objectNames = {"test1", "test2"})</code>,
+<code>@InnerTest(classNames = {"InnerTest1", "InnerTest2"}, objectNames = {"test1", "test2"})</code>,
 then the converted code would be like the code showed in code 8:
-<pre>
+{{{
 code 8:
 public class Example {
       ...
       <b><font color="blue">InnerTest1 test1 = new InnerTest1();</font></b>
       <b><font color="blue">InnerTest2 test2 = new InnerTest2();</font></b>
 }
-</pre>
+}}}
 </p>
 <p>
 The design rules of the inner test class are:
@@ -211,7 +211,7 @@ may not function the same as the original project.
 <h2>3. A Example</h2>
 <p>Allow me use the Money example in JUnit to show the usage of Jtoc. Assume the content
 of the "Money.java" is:
-<pre>
+{{{
 Money.java
 import static org.junit.Assert.*;
 import org.jtoc.*;
@@ -267,11 +267,11 @@ public class Money{
 		}
 	}
 }
-</pre>
+}}}
 <p>As the code showed above, the innerclasses - InnerTest and InnerTestStatic, have
 implemented the contracts; the method to be tested are add with some Jtoc annotations.
 the converted code would be like the code showed in below[with some repeated code omitted]:
-<pre>
+{{{
 import static org.junit.Assert.*;
 import org.jtoc.*;
 public class Money{
@@ -303,7 +303,7 @@ public class Money{
 
 	<font color="blue">InnerTest innerTest = new InnerTest();</font>
 }
-</pre>
+}}}
 <p>As the converted code showed above, the method to be tested successfully called
 corresponding test methods; notice that the "testObject" of the post annotation in 
 "getMoney" was set to "InnerTestStatic", and the static test methods had been successfully
@@ -330,7 +330,7 @@ converting problems if violated:
 </p>
 <h4>[1]. the line with Jtoc annotation should not have other code. Because the generated
 code would delete these lines.</h4>
-<pre>
+{{{
 <font color="red">@InnerTest</font> @AnotherAnno
 public class Example{
 	<font color="red">@Post</font> @Override
@@ -344,9 +344,9 @@ public class Example{
 		...
 	}
 }
-</pre>
+}}}
 The right format is: 
-<pre>
+{{{
 <font color="blue">@InnerTest</font>
 @AnotherAnno
 public class Example{
@@ -364,12 +364,12 @@ public class Example{
 		...
 	}
 }
-</pre>
+}}}
 <h4>[2]. For the void method with Post annotation, the return point: last '}' of the 
 method body and the "return;" statement must be the last non-blank characters in the line.
 "non-blank characters" means [ \t\r\n\v\f] in regular expression. 
 </h4>
-<pre>
+{{{
 @InnerTest
 public class Example{
 	@Post
@@ -390,9 +390,9 @@ public class Example{
 		...
 	}
 }
-</pre>
+}}}
 The right format is:
-<pre>
+{{{
 @InnerTest
 public class Example{
 	@Post
@@ -416,10 +416,10 @@ public class Example{
 		...
 	}
 }
-</pre>
+}}}
 <h4>[3]. For the non-void method with Post annotation, the ';' of the return statement
 must be the last non-blank characters in the line, in which the statement could in multi-lines.</h4>
-<pre>
+{{{
 @InnerTest
 public class Example{
 	@post
@@ -435,9 +435,9 @@ public class Example{
 		if(b < 0) return a-b;
 		else<font color="red"> return a+b;</font>}
 }
-</pre>
+}}}
 The right format is:
-<pre>
+{{{
 @InnerTest
 public class Example{
 	@post
@@ -455,10 +455,10 @@ public class Example{
 		else<font color="blue"> return a+b;</font>
 	}
 }
-</pre>
+}}}
 <h4>[4]. Do not annotate method with only one line, which means the '{' and '}'
 of the method body are in the same line.</h4>
-<pre>
+{{{
 @InnerTest
 public class Example{
 	@pre
@@ -468,9 +468,9 @@ public class Example{
 	public int getNumber() 
 	<font color="red">{ return number; }</font>
 }
-</pre>
+}}}
 The right format is:
-<pre>
+{{{
 @InnerTest
 public class Example{
 	@pre
@@ -482,7 +482,7 @@ public class Example{
 		return number;
 	}</font>
 }
-</pre>
+}}}
 <p>In fact, you would find these restrictions are simple, and comply with the 
 Java's readability specification, so maybe you should get used to these:-)
 <h2>5. Conclusions</h2>
