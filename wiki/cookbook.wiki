@@ -2,7 +2,7 @@
 #labels Jtoc,Featured,Java
 
 =Jtoc Cookbook=
-
+<p>Guodong Qu</p>
 <hr WIDTH="100%">
 <br>
 Notice: when you read this article, the author suppose that you had
