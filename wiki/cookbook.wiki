@@ -347,7 +347,7 @@ public class Example{
 }}}
 <h4>(2). For the void method with Post annotation, the return point: last '}' of the 
 method body and the "return;" statement must be the last non-blank characters in the line.
-"non-blank characters" means [ \t\r\n\v\f] in regular expression. 
+"non-blank characters" means " \t\r\n\v\f\" in regular expression. 
 </h4>
 {{{
 @InnerTest
