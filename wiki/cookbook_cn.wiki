@@ -325,7 +325,7 @@ public class Example{
 }
 }}}
 <h4>(2). 对添加Post注解的返回值为void的方法，函数体结尾"}"和"return;"必须是最后的非空白字符。
-这里的空白字符是指空格、回车等不可见字符(即正则表达式中的<code>[ \t\r\n\v\f]</code>)。</h4>
+这里的空白字符是指空格、回车等不可见字符(即正则表达式中的<pre>[ \t\r\n\v\f]</pre>)。</h4>
 {{{
 @InnerTest
 public class Example{
