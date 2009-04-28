@@ -1,0 +1,4 @@
+Jtoc(Java Test Oracle Creator/Compiler)
+Copyright 2009 Guodong Qu
+
+This product includes software developed by Guodong Qu.
