@@ -1,0 +1,449 @@
+#summary Jtoc的简单介绍.
+
+=Jtoc Cookbook 中文版=
+
+<p>Guodong Qu</p>
+
+<hr WIDTH="100%">
+<br>
+Notice: 作者认为您在读这篇文章之前已经对JUnit比较熟悉了，如果您还没有看过或用过JUnit，
+请先访问其<a href="http://www.junit.org">主页</a>。
+<h2>1. 简介</h2>
+你也许已经听说过契约式编程的概念
+[<a href="http://en.wikipedia.org/wiki/Design_by_contract">"Programming by contract"</a>]
+，它通过在程序的方法体的开始和结束部分添加一些断言来保证方法是按照期望的逻辑执行的。
+Java语言本身有assert关键字用来支持断言，但是Java的程序员们显然认为这种支持是不够的，
+所以十余种契约式编程的类库被开发出来，如Contract4J，jContractor，Java Modeling Language (JML)等
+[你可以查看<a href="http://en.wikipedia.org/wiki/Design_by_contract#Languages_with_third-party_support">这里</a>以获得完整的列表]。
+<p>Jtoc也是这样一种面向契约式编程的应用，不过与其他应用侧重点不同，
+Jtoc的目的是在不改变类的设计的前提下完整的测试类的行为，
+从而为测试用例的自动生成奠定基础；相比之下，前面提到的这些契约式编程的框架，
+要么对原工程类的设计有限制，要么不能完整的测试类的行为。
+另外Jtoc支持单元测试，原来编写的JUnit测试可以不加更改的应用到Jtoc生成的测试工程中。
+
+<p>Jtoc 的设计思想非常简单，它提供了三个Java注解，程序员可以使用这些注解来注释自己的程序，
+并在内部的测试类中编写方法的前断言和后断言来实现契约。
+当需要测试时，只要使用Jtoc提供的编译器【实际上是一个Java代码的转换器】将源程序
+编译为一个测试工程，并在测试工程中使用JUnit测试工具执行测试即可。过程简图如下图所示：
+
+[http://lh3.ggpht.com/_OATorOD3pb8/Sd6zLlY-q_I/AAAAAAAAAE8/2_Kf7bKG_CI/jtoc_design.JPG]
+<p><font size=-1>图1  Jtoc 设计结构</font>
+
+<h2>2. Jtoc Annotations</h2>
+<p>Jtoc提供的注解有Pre、Post、InnerTest三种，它们的有效范围都是源代码级的
+[RetentionPolicy.SOURCE]，程序员不用担心他们占用运行时的资源。下面分别介绍一下这些注解
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.Pre</h3>
+<p>Pre注解的目标是"方法"，其作用是告诉Jtoc编译器它所注解的方法将被附加一个PreCheck方法，
+用来检测该方法的前置契约。一个简单的Pre注解的调用例子是这样的：
+</p>
+
+{{{
+code 1:
+public class Example {
+   @Pre
+   public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+   }
+}
+}}}
+</p>
+
+<p>则经过Jtoc编译器编译后的测试源代码会像code2所示：
+{{{
+code 2:
+public class Example {
+   public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      innerTest.methodPreCheck(para1, ..., paraN);
+      ...
+   }
+}
+}}}
+</p>
+
+<p>Pre注解支持三个可选择参数，分别是testObject、testMethod和parameters。
+他们都是String变量，分别用来存放测试对象名称、测试方法名称和测试方法的参数列表，
+如果没有指定相应值，则其默认值分别是"innerTest"、"被测试方法的方法名"+"PreCheck"、
+被测试方法的参数列表。
+<p>例如如果将code 1 中的Pre注解转换为
+@Pre(testObject = "test", testMethod = "commenTest", parameters = "para1, paraK")，
+则经过Jtoc编译器编译的测试源代码则会像code 3中所示：
+{{{
+code 3:
+public class Example {
+   public void method(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      test.commenTest(para1, paraK);
+      ...
+   }
+}
+}}}
+</p>
+
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.Post</h3>
+<p>Post注解的目标是"方法"，其作用是告诉Jtoc编译器它所注解的方法将被附加一个PostCheck方法，
+用来检测该方法的后置契约。一个简单的Post注解的调用例子是这样的：
+</p>
+{{{
+code 4:
+public class Example {
+   @Post
+   public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      return;
+      ...
+   }
+
+   @Post 
+   public returnType method2(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      return expr1;
+      ...
+      return exprK;
+   }
+}
+}}}
+</p>
+
+<p>则经过Jtoc编译器编译后的测试源代码会像code 5 所示：
+{{{
+code 5:
+public class Example {
+   public void method1(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      {innerTest.method1PostCheck(para1, ..., paraN);return;}
+      ...
+      innerTest.method1PostCheck(para1, ..., paraN);
+   }
+   
+   public returnType method2(ParameterType1 para1, ..., ParameterTypeN paraN) {
+      ...
+      return innerTest.method2PostCheck((expr1), para1, ..., paraN);
+      ...
+      return innerTest.method2PostCheck((exprK), para1, ..., paraN);
+   }
+  //which need the innerTest method return the 1st input without any change
+}
+}}}
+</p>
+
+<p>Post注解与Pre注解相同，也支持三个可选择参数，分别是testObject、testMethod和parameters，
+具体的用法与Pre注解中的用法基本相同，其不同点在于：
+	# testMethod的默认值为"被测试方法的方法名"+"PostCheck"
+	# parameters的默认值为被测试方法的返回值加上其输入的参数列表；
+	如果返回值是void，类型则其默认值为方法的输入参数列表。 if the return type is not "void"; or else the "method's parameters" would be assigned as the default value.
+
+<h3>[http://lh5.ggpht.com/_OATorOD3pb8/Sd6zLkAgDsI/AAAAAAAAAFE/BVgpi-8Eodg/at.JPG]org.jtoc.InnerTest</h3>
+<p>InnerTest注解的目标是"类型声明"，其作用是告诉Jtoc编译器它所注解的类中，
+哪些相关的测试类需要被初始化。一个简单的InnerTest注解的调用例子是这样的：
+
+{{{
+code 6:
+@InnerTest
+public class Example {
+      ...
+}
+}}}
+</p>
+
+<p>则经过Jtoc编译器编译后的测试源代码会像code 7 所示：
+{{{
+code 7:
+public class Example {
+      ...
+      InnerTest innerTest = new InnerTest();
+}
+}}}
+</p>
+
+<p>InnerTest注解支持两个可选择参数，分别是classNames和objectNames。
+他们都是String数组变量，分别用来存放内部测试类的名称和内部测试类的对象的名称，
+其默认值分别是：“InnerTest”和“innerTest”。如果将code 7 中的InnerTest注解换为
+<code>&#064;InnerTest(classNames = {"InnerTest1", "InnerTest2"}, objectNames = {"test1", "test2"})</code>，
+则经过Jtoc编译器编译的测试源代码则会像code 8中所示
+{{{
+code 8:
+public class Example {
+      ...
+      InnerTest1 test1 = new InnerTest1();
+      InnerTest2 test2 = new InnerTest2();
+}
+}}}
+</p>
+<p>
+Jtoc内部测试类的设计准则：
+	# 在内部类中不能更改被测试类的任何数据域的值，也不能更改任何传入参数的值，
+	只能使用其只读的形式进行断言的测试。
+	# 对返回类型不是"void"的Java方法，
+	其内部类的后断言测试方法必须接受其返回值的表达式作为其输入参数，
+	并且只使用其只读的形式进行断言的测试，并最终将该值返回。
+	一般的，我们都将返回参数作为第一个参数传入给测试方法。
+
+如果不遵守以上准则，则生成的测试工程中的类的功能将不能保证与原工程的类的功能相同。
+</p>
+
+<h2>3. 例子</h2>
+<p>下面举一个JUnit中Money的例子来说明Jtoc的使用效果，假设这是Money.java的内容：
+{{{
+Money.java
+import static org.junit.Assert.*;
+import org.jtoc.*;
+@InnerTest
+public class Money{
+	private final int fAmount;
+	private final String fCurrency;
+	public Money(int amount, String currency) {
+		fAmount= amount;
+		fCurrency= currency;
+	}
+	public int amount() {
+		return fAmount;
+	}
+	public String currency() {
+		return fCurrency;
+	}
+	@Post
+	public Money multiply(int factor) {
+		return new Money(amount()*factor, currency());
+	}
+	@Post
+	public Money negate() {
+		return new Money(-amount(), currency());
+	}
+	@Pre(testObject = "InnerTestStatic")
+	@Post(testObject = "InnerTestStatic")
+	public static Money getMoney(int amount, String currency){
+		return new Money(amount, currency);
+	}
+
+	private class InnerTest {
+		public Money multiplyPostCheck(Money result, int factor){
+			assertEquals(currency(), result.currency());
+			assertEquals(amount()*factor, result.amount());
+			return result;
+		}
+		
+		public Money negatePostCheck(Money result){
+			return multiplyPostCheck(result, -1);
+		}
+	}
+	
+	static class InnerTestStatic{
+		public static void getMoneyPreCheck(int amount, String currency) {
+			assertNotNull(currency);
+		}
+	
+		public static Money getMoneyPostCheck(Money result, int amount,	String currency) {
+			assertEquals(currency, result.currency());
+			assertEquals(amount, result.amount());
+			return result;
+		}
+	}
+}
+}}}
+<p>可以看到InnerTest和InnerTestStatic两个类分别实现了Money类中各个方法的测试契约，
+并在被测试的方法前加上了相应的Jtoc注解。它经过Jtoc编译器转换后结果为[省略若干代码]：
+{{{
+import static org.junit.Assert.*;
+import org.jtoc.*;
+public class Money{
+	private final int fAmount;
+	private final String fCurrency;
+	public Money(int amount, String currency) {
+		fAmount= amount;
+		fCurrency= currency;
+	}
+	public int amount() {
+		return fAmount;
+	}
+	public String currency() {
+		return fCurrency;
+	}
+	public Money multiply(int factor) {
+		return innerTest.multiplyPostCheck(( new Money(amount()*factor, currency())), factor);
+	}
+	public Money negate() {
+		return innerTest.negatePostCheck(( new Money(-amount(), currency())));
+	}
+	public static Money getMoney(int amount, String currency){
+		InnerTestStatic.getMoneyPreCheck(amount, currency);
+		return InnerTestStatic.getMoneyPostCheck(( new Money(amount, currency)), amount, currency);
+	}
+
+	private class InnerTest { ... }
+	static class InnerTestStatic { ... }
+
+	InnerTest innerTest = new InnerTest();
+}
+}}}
+<p>可以看到，经过转换的代码成功的调用了相应的测试方法，从而完成了契约的检查；
+注意getMoney中的Post注解中testObject被设定为"InnerTestStatic"，经过Jtoc的
+编译器的转换成功地完成了静态方法的测试。另外multiplyPostCheck测试方法被
+negatePostCheck测试方法调用了，所以在测试方法中的代码可以比较容易的得到重用，
+从而减少维护的难度。
+
+<h2>4. 规则与限制</h2>
+有人告诉霍金说，"你的书[时间简史]里每出现一条科学公式，就会导致销售量下降一半"，
+我猜相同的规则也适用于类库对程序员的的限制--每一条规则都会导致使用该类库的程序员数量减半。
+不过为了提高程序的可读性和Jtoc后台实现的方便[其实主要原因是后者:-)]，
+我还是列出了这几条使用Jtoc是必须遵守的规则，希望以后的版本中这些限制会越来越少：
+<p>
+内部测试类的设计准则前面已经介绍过了，他很重要，所以这里再强调一下：
+简言之，就是内部类中的测试方法不要更改功能类中的任何数据，
+而且要把被测方法的返回值作为参数调用并返回。
+</p>
+<p>除了这两个设计准则之外，还有一些限制，如果不遵守这些限制，
+Jtoc输出的程序极可能不能使用。下面用一些例子来说明这些限制：</p>
+<h4>(1). 包含Jtoc注解的行不要包含其他代码。因为生成的代码中将删除包含Jtoc注解的行</h4>
+{{{
+@InnerTest @AnotherAnno
+public class Example{
+	@Post @Override
+	public void method1(int factor) {
+		...
+	}@pre @post
+	public int method2() {
+		...
+	}
+	@post public void method3() {
+		...
+	}
+}
+}}}
+正确的写法是：
+{{{
+@InnerTest
+@AnotherAnno
+public class Example{
+	@Post
+	@Override
+	public void method1(int factor) {
+		...
+	}
+	@pre @post
+	public int method2() {
+		...
+	}
+	@post
+	public void method3() {
+		...
+	}
+}
+}}}
+<h4>(2). 对添加Post注解的返回值为void的方法，函数体结尾"}"和"return;"必须是最后的非空白字符。
+这里的空白字符是指空格、回车等不可见字符(即正则表达式中的[ \t\r\n\v\f])。</h4>
+{{{
+@InnerTest
+public class Example{
+	@Post
+	public void method1(int factor) {
+		...
+	}// End of method1
+	@pre @post
+	public void method2() {
+		if(b == null)
+			return; else
+		...
+		if(shouldReturn){
+			return;}
+		else{
+			...
+		}
+	}private int method3(){
+		...
+	}
+}
+}}}
+正确的写法是：
+{{{
+@InnerTest
+public class Example{
+	@Post
+	public void method1(int factor) {
+		...
+	}
+	@pre @post
+	public void method2() {
+		if(b == null)
+			return;
+		else
+		...
+		if(shouldReturn){
+			return;
+		}
+		else{
+			...
+		}
+	}
+	private int method3(){
+		...
+	}
+}
+}}}
+<h4>(3). 对添加Post注解的返回值不为void的方法，return表达式结尾的";"必须是最后的非空白字符。
+这里return表达式可以是多行的。</h4>
+{{{
+@InnerTest
+public class Example{
+	@post
+	public ActionListener method1() {
+		if(shouldReturnListener)
+		return new ActionListener(){
+			...
+			}; else
+			return null;
+	}
+	@pre @post
+	public int method2(int a, int b) {
+		if(b < 0) return a-b;
+		else return a+b;}
+}
+}}}
+正确的写法是：
+{{{
+@InnerTest
+public class Example{
+	@post
+	public ActionListener method1() {
+		if(shouldReturnListener)
+		return new ActionListener(){
+			...
+			};
+		else
+			return null;
+	}
+	@pre @post
+	public int method2(int a, int b) {
+		if(b < 0) return a-b;
+		else return a+b;
+	}
+}
+}}}
+<h4>(4). 不要使用单行的函数体。这里的单行是指函数体的'{'和'}'花括号在一行内。</h4>
+{{{
+@InnerTest
+public class Example{
+	@pre
+	public void setNumber(int number) 
+	{ this.number = number; }
+	@pre @post
+	public int getNumber() 
+	{ return number; }
+}
+}}}
+正确的写法是：
+{{{
+@InnerTest
+public class Example{
+	@pre
+	public void setNumber(int number){
+		this.number = number; }
+	@pre @post
+	public int getNumber()
+	{
+		return number;
+	}
+}
+}}}
+<p>其实你会发现这些要求其实是比较简单的，而且是符合Java的阅读规范的，遵守起来并不太难:-)
+<h2>5. 结束语</h2>
+<p>开始你的Jtoc旅程吧，希望你不虚此行，预祝好运！
+<hr WIDTH="100%">

@@ -75,8 +75,8 @@ public class ProjectConvertor {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		File inputDir = new File("D:/Project/Jtoc/Project_SVN/JtocInput/");
-		File outputDir = new File("D:/Project/Jtoc/Project_SVN/JtocOutput/");
+		File inputDir = new File("E:/Project/Jtoc/Projects/JtocInput/");
+		File outputDir = new File("E:/Project/Jtoc/Projects/JtocOutput/");
 		
 		if (args.length == 2) {
 			inputDir = new File(args[0]);

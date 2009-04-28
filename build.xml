@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Jtoc" default="clean" basedir=".">
-	<!-- The directory containing source code and related libraries -->
-	<property name="src.dir" value="src" />
-	<property name="lib.dir" value="lib" />
-	<property name="javadoc.dir" value="javadoc" />
-	<property name="dist.dir" value="target" />
+<project name="Jtoc" default="create-bin-zipfile" basedir=".">
+	<property file="${basedir}/default.properties"/>
 
 	<path id="classpath">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-
-	<!-- Temporary build directories -->
-	<property name="build.dir" value="build" />
-	<property name="build.classes" value="${build.dir}/classes" />
-	<property name="build.lib" value="${build.dir}/lib" />
 
 	<!-- Preparation and cleanups -->
 	<target name="prepare"
@@ -25,24 +16,37 @@
 		<mkdir dir="${build.classes}" />
 	</target>
 
-	<target name="clean" description="--> Removes all generated files.">
+	<target name="clean" description="--> Removes temp generated files.">
 		<delete dir="${build.dir}" />
 		<delete dir="${javadoc.dir}"/>
+	</target>
+	
+	<target name="clean-all" depends="clean" description="--> Removes all generated files.">
+		<delete dir="${dist.dir}"/>
 	</target>
 
 	<!-- Compile the application -->
 	<target name="compile" depends="prepare"
 		description="--> Compiles all source code.">
-		<javac srcdir="${src.dir}" destdir="${build.classes}" debug="${debug.flag}"
-			deprecation="on">
+		<javac srcdir="${src.dir}" destdir="${build.classes}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
 			<classpath refid="classpath" />
 		</javac>
+		<copy todir="${build.classes}" filtering="on">
+			<fileset dir="${src.dir}" excludes="**/*.java"/>
+		</copy>
 	</target>
 
 	<target name="jar" depends="compile"
-		description="--> Generates jar file in the 'dist' directory.">
-		<!-- Exclude unit tests from the final JAR file -->
-		<jar jarfile="${build.lib}/jtoc.jar" basedir="${build.classes}" />
+		description="--> Generates the runnable jar file in the 'build' directory.">
+		<!-- Exclude unit tests from the final JAR file, ANT 1.7 is required -->
+		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}"
+        	filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Main-Class" value="org.jtoc.convertor.ProjectConvertor"/>
+				<attribute name="Class-Path" value=".;./lib/"/>
+			</manifest>
+		</jar>
 	</target>
 
 	<target name="javadoc"
@@ -53,4 +57,26 @@
 			<classpath refid="classpath" />
 		</javadoc>
 	</target>
-</project> 
+
+	<target name="create-bin-zipfile" depends="jar">
+		<mkdir dir="${dist.dir}" />
+		<copy file="LICENSE.txt" todir="${build.lib}"/>
+		<copy file="NOTICE.txt" todir="${build.lib}"/>
+		<zip destfile="${zipfile.path}" basedir="${build.lib}">
+			<fileset dir=".">
+				<include name="${lib.dir}/**"/>
+				<include name="${doc.dir}/**"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="create-src-zipfile" depends="clean">
+		<mkdir dir="${dist.dir}" />
+		<zip destfile="${srczipfile.path}">
+			<fileset dir=".">
+				<exclude name="dist/**"/>
+				<exclude name="bin/**"/>
+			</fileset>
+		</zip>
+	</target>
+</project>

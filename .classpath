@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry including="*.jar" kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/javaparser-1.0.6.jar" sourcepath="D:/Project/Jtoc/Project/Jtoc/lib/javaparser-1.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/javaparser-1.0.6.jar" sourcepath="lib/javaparser-1.0.6-src.zip"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
