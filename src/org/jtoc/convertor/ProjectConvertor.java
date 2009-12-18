@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.log4j.Logger;
+
 /**
  * class used to convert a project.
  * 
@@ -33,29 +35,64 @@ import java.io.OutputStream;
  */
 public class ProjectConvertor {
 	
-	public static void convert(File inputDir, File outputDir) throws Exception {
+	private static Logger logger = Logger.getLogger(ProjectConvertor.class.getName());
+	
+	private static void convert(File inputDir, File outputDir,
+			boolean forceRewrite) throws Exception {
 		if (!inputDir.exists())
 			throw new Exception(
 					"The specified input Directory is not existed : "
 							+ inputDir.getAbsolutePath());
-		
-		if (!outputDir.exists())
-			outputDir.mkdir();
 
-		for (File f : inputDir.listFiles()) {
+		if (!outputDir.exists()){
+			logger.debug("Makeing directory "+outputDir.getAbsolutePath());
+			outputDir.mkdir();
+		}
+
+		for (File origin : inputDir.listFiles()) {
 			File output = new File(outputDir.getAbsolutePath() + '/'
-					+ f.getName());
-			if (f.isDirectory())
-				ProjectConvertor.convert(f, output);
-			else if (f.getName().toLowerCase().endsWith(".java")) {
-				ConvertorFactory.getSingleFileConvertor().convert(f, output);
-			}else{
-				copyfile(f, output);
+					+ origin.getName());
+			if (origin.isDirectory())
+				ProjectConvertor.convert(origin, output, forceRewrite);
+			else if (origin.getName().toLowerCase().endsWith(".java")) {
+				if ((origin.lastModified() > output.lastModified())
+						|| forceRewrite)
+					ConvertorFactory.getSingleFileConvertor().convert(origin,
+							output);
+				// else do nothing
+			} else {
+				if ((origin.lastModified() > output.lastModified())
+						|| forceRewrite)
+					copyfile(origin, output);
+				// else do nothing
 			}
 		}
 	}
 	
-	private static void copyfile(File srcFile, File destFile) throws IOException {
+	public static void convertProject(File inputDir, File outputDir) throws Exception {
+		ProjectConvertor.convertProject(inputDir, outputDir, false);
+	}
+	
+	public static void convertProject(File inputDir, File outputDir,
+			boolean forceRewrite) throws Exception {
+		logger.info("Begin Jtoc Project Convertion:");
+		logger.info("Input Directory: "+inputDir.getAbsolutePath());
+		logger.info("Output Directory: "+outputDir.getAbsolutePath());
+		logger.info("Should rewrite all files? "+forceRewrite);
+		ProjectConvertor.convert(inputDir, outputDir, forceRewrite);
+		logger.info("Jtoc Project Convertion Finished");
+	}
+
+	/**
+	 * directly copy the file to the dest directory
+	 * @param srcFile the source file
+	 * @param destFile the destination file
+	 * @throws IOException
+	 */
+	private static void copyfile(File srcFile, File destFile)
+			throws IOException {
+		logger.debug("copying form file " + srcFile.getName() + " to "
+				+ destFile.getAbsolutePath());
 		InputStream in = new BufferedInputStream(new FileInputStream(srcFile));
 
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(
@@ -72,18 +109,53 @@ public class ProjectConvertor {
 
 	/**
 	 * @param args
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		File inputDir = new File("E:/Project/Jtoc/Projects/JtocInput/");
-		File outputDir = new File("E:/Project/Jtoc/Projects/JtocOutput/");
-		
-		if (args.length == 2) {
-			inputDir = new File(args[0]);
-			outputDir = new File(args[1]);
+		try {
+			if (args == null || args.length == 0) {
+				usage();
+				return;
+			}
+
+//			File inputDir = new File("E:/Project/Jtoc/Projects/JtocInput/");
+//			File outputDir = new File("E:/Project/Jtoc/Projects/JtocOutput/");
+			File inputDir = null;
+			File outputDir = null;
+			boolean rewrite = false;
+
+			for (int i = 0; args != null && i < args.length; i++) {
+				if (args[i].equals("-s")) {
+					inputDir = new File(args[++i]);
+				}
+				else if (args[i].equals("-d")) {
+					outputDir = new File(args[++i]);
+				}
+				else if (args[i].equals("-r")) {
+					rewrite = true;
+				} else {
+					throw new Exception("The specified parameter was wrong: "+args[i]);
+				}
+			}
+
+			ProjectConvertor.convertProject(inputDir, outputDir, rewrite);
+			
+		} catch (Exception e) {
+			logger.error("Exception catched in convert process:", e);
 		}
-		
-		ProjectConvertor.convert(inputDir, outputDir);
+	}
+
+	private static void usage() {
+		System.out.println("Usage: java -jar jtoc.jar [parameters]");
+		System.out.println("where parameters include:");
+		System.out.println("       -s <Source Project Directory>");
+		System.out.println("       -d <Destination Project Directory>");
+		System.out.println("       -r : Rewrite all java files if specified");
+		System.out.println("            or only rewrite the modified files");
+		System.out.println("For Example£º");
+		System.out.println("       java -jar jtoc.jar -s . -d ../testProject/");
+		System.out.println(" Or");
+		System.out.println("       java -jar jtoc.jar -s \"D:\\Origin\" -d \"D:\\Test\" -r");
 	}
 
 }

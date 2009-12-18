@@ -68,7 +68,7 @@ public class SingleFileConvertor extends UnitConvertor<ClassInfo>  {
 	 */
 	public void convert(File inputFile, File outputFile) throws Exception {
 		logger.info("convert form file " + inputFile.getName() + " to "
-				+ outputFile.getName());
+				+ outputFile.getAbsolutePath());
 		
 		this.init();
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Jtoc" default="create-bin-zipfile" basedir=".">
-	<property file="${basedir}/default.properties"/>
+	<property file="${basedir}/default.properties" />
 
 	<path id="classpath">
 		<fileset dir="${lib.dir}">
@@ -9,8 +9,7 @@
 	</path>
 
 	<!-- Preparation and cleanups -->
-	<target name="prepare"
-		description="--> Creates the build directories">
+	<target name="prepare" description="--> Creates the build directories">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.lib}" />
 		<mkdir dir="${build.classes}" />
@@ -18,64 +17,70 @@
 
 	<target name="clean" description="--> Removes temp generated files.">
 		<delete dir="${build.dir}" />
-		<delete dir="${javadoc.dir}"/>
+		<delete dir="${javadoc.dir}" />
 	</target>
-	
+
 	<target name="clean-all" depends="clean" description="--> Removes all generated files.">
-		<delete dir="${dist.dir}"/>
+		<delete dir="${dist.dir}" />
 	</target>
 
 	<!-- Compile the application -->
-	<target name="compile" depends="prepare"
-		description="--> Compiles all source code.">
+	<target name="compile" depends="prepare" description="--> Compiles all source code.">
 		<javac srcdir="${src.dir}" destdir="${build.classes}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
 			<classpath refid="classpath" />
 		</javac>
-		<copy todir="${build.classes}" filtering="on">
-			<fileset dir="${src.dir}" excludes="**/*.java"/>
-		</copy>
 	</target>
 
-	<target name="jar" depends="compile"
-		description="--> Generates the runnable jar file in the 'build' directory.">
+	<target name="jar" depends="compile" description="--> Generates the runnable jar file in the 'build' directory.">
+		<!-- Convert project class path to string property -->
+		<pathconvert property="mf.classpath" pathsep=" ">
+			<mapper>
+				<chainedmapper>
+					<!-- remove absolute path -->
+					<flattenmapper />
+					<!-- add lib/ prefix -->
+					<globmapper from="*" to="lib/*" />
+				</chainedmapper>
+			</mapper>
+			<path refid="classpath" />
+		</pathconvert>
+
 		<!-- Exclude unit tests from the final JAR file, ANT 1.7 is required -->
-		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}"
-        	filesetmanifest="mergewithoutmain">
+		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}" filesetmanifest="mergewithoutmain">
 			<manifest>
-				<attribute name="Built-By" value="${user.name}"/>
-				<attribute name="Main-Class" value="org.jtoc.convertor.ProjectConvertor"/>
-				<attribute name="Class-Path" value=".;./lib/"/>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Created-By" value="${mf.created-by}" />
+				<attribute name="Main-Class" value="${mf.main-class}" />
+				<attribute name="Class-Path" value=". ${mf.classpath}" />
 			</manifest>
 		</jar>
 	</target>
 
-	<target name="javadoc"
-		description="--> Generates the API documentation.">
+	<target name="javadoc" description="--> Generates the API documentation.">
 		<mkdir dir="${javadoc.dir}" />
-		<javadoc packagenames="org.jtoc.*" sourcepath="${src.dir}"
-			destdir="${javadoc.dir}" author="true" version="true" use="true">
+		<javadoc packagenames="org.jtoc.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" author="true" version="true" use="true">
 			<classpath refid="classpath" />
 		</javadoc>
 	</target>
 
-	<target name="create-bin-zipfile" depends="jar">
+	<target name="create-bin-zipfile" depends="jar" description="--> Generates the binary zip file.">
 		<mkdir dir="${dist.dir}" />
-		<copy file="LICENSE.txt" todir="${build.lib}"/>
-		<copy file="NOTICE.txt" todir="${build.lib}"/>
+		<copy file="LICENSE.txt" todir="${build.lib}" />
+		<copy file="NOTICE.txt" todir="${build.lib}" />
 		<zip destfile="${zipfile.path}" basedir="${build.lib}">
 			<fileset dir=".">
-				<include name="${lib.dir}/**"/>
-				<include name="${doc.dir}/**"/>
+				<include name="${lib.dir}/**" />
+				<include name="${doc.dir}/**" />
 			</fileset>
 		</zip>
 	</target>
-	
-	<target name="create-src-zipfile" depends="clean">
+
+	<target name="create-src-zipfile" depends="clean" description="--> Generates the source zip file.">
 		<mkdir dir="${dist.dir}" />
 		<zip destfile="${srczipfile.path}">
 			<fileset dir=".">
-				<exclude name="dist/**"/>
-				<exclude name="bin/**"/>
+				<exclude name="dist/**" />
+				<exclude name="bin/**" />
 			</fileset>
 		</zip>
 	</target>
