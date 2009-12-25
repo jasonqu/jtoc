@@ -26,7 +26,8 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jtoc.convertor.cpunit.ClassInfo;
 
 /**
@@ -36,7 +37,7 @@ import org.jtoc.convertor.cpunit.ClassInfo;
  */
 public class SingleFileConvertor extends UnitConvertor<ClassInfo>  {
 
-	private static Logger logger = Logger.getLogger(SingleFileConvertor.class.getName());
+	private static Log logger = LogFactory.getLog(SingleFileConvertor.class);
 
 	public SingleFileConvertor() {
 		super(null);

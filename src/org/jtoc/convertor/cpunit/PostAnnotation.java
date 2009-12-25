@@ -25,7 +25,8 @@ import japa.parser.ast.visitor.VoidVisitorAdapter;
 import java.io.FileInputStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * class used to contain information of the Post Jtoc Annotation.
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public class PostAnnotation extends JtocAnnotation {
 
-	private static Logger logger = Logger.getLogger(PostAnnotation.class.getName());
+	private static Log logger = LogFactory.getLog(PostAnnotation.class);
 	
 	/**
 	 * used for test

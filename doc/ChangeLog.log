@@ -1,0 +1,5 @@
+== Version 0.1.2: Released Dec 22 2009 ==
+
+* Delete the class org.jtoc.Assert and org.jtoc.PreConditionException, which could been done well with hemcrast.
+
+* Change the logging tool from log4j to apache commons logging.

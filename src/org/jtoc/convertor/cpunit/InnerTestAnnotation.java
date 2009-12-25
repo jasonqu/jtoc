@@ -27,7 +27,8 @@ import japa.parser.ast.visitor.VoidVisitorAdapter;
 import java.io.FileInputStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Class for information of the InnerTestAnnotation elements.
@@ -36,7 +37,7 @@ import org.apache.log4j.Logger;
  */
 public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 
-	private static Logger logger = Logger.getLogger(InnerTestAnnotation.class.getName());
+	private static Log logger = LogFactory.getLog(InnerTestAnnotation.class);
 
 	/**
 	 * used for test

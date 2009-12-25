@@ -23,7 +23,8 @@ import japa.parser.ast.expr.NormalAnnotationExpr;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract class for information of the JtocAnnotation elements.
@@ -32,7 +33,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 
-	private static Logger logger = Logger.getLogger(JtocAnnotation.class.getName());
+	private static Log logger = LogFactory.getLog(JtocAnnotation.class);
 
 	/**
 	 * used for test

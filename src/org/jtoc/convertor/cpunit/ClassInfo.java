@@ -25,7 +25,8 @@ import japa.parser.ast.expr.AnnotationExpr;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract class for information of the ClassOrInterfaceDeclaration elements.
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public class ClassInfo extends JtocNode<ClassOrInterfaceDeclaration> {
 
-	private static Logger logger = Logger.getLogger(ClassInfo.class.getName());
+	private static Log logger = LogFactory.getLog(ClassInfo.class);
 
 	/**
 	 * set the compilation unit and initial the local variables

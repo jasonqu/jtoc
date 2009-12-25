@@ -21,7 +21,8 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory; 
 import org.jtoc.convertor.cpunit.JtocNode;
 
 /**
@@ -31,7 +32,7 @@ import org.jtoc.convertor.cpunit.JtocNode;
  */
 public abstract class UnitConvertor<C extends JtocNode> {
 	
-	static Logger logger = Logger.getLogger(UnitConvertor.class.getName());
+	private static Log logger = LogFactory.getLog(UnitConvertor.class);
 
 	// the number and the content of the line being parsed
 	protected static int lineNum = 0;
