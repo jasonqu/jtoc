@@ -23,7 +23,8 @@ import japa.parser.ast.expr.AnnotationExpr;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * class used to contain information of the Methods.
@@ -32,8 +33,7 @@ import org.apache.log4j.Logger;
  */
 public class MethodInfo extends JtocNode<MethodDeclaration> {
 
-	private static Logger logger = Logger.getLogger(InnerTestAnnotation.class
-			.getName());
+	private static Log logger = LogFactory.getLog(InnerTestAnnotation.class);
 
 	/**
 	 * used for test

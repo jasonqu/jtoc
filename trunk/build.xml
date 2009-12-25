@@ -20,18 +20,21 @@
 		<delete dir="${javadoc.dir}" />
 	</target>
 
-	<target name="clean-all" depends="clean" description="--> Removes all generated files.">
+	<target name="clean-all" depends="clean"
+		description="--> Removes all generated files.">
 		<delete dir="${dist.dir}" />
 	</target>
 
 	<!-- Compile the application -->
 	<target name="compile" depends="prepare" description="--> Compiles all source code.">
-		<javac srcdir="${src.dir}" destdir="${build.classes}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+		<javac srcdir="${src.dir}" destdir="${build.classes}" debug="${compile.debug}"
+			deprecation="${compile.deprecation}" optimize="${compile.optimize}">
 			<classpath refid="classpath" />
 		</javac>
 	</target>
 
-	<target name="jar" depends="compile" description="--> Generates the runnable jar file in the 'build' directory.">
+	<target name="jar" depends="compile"
+		description="--> Generates the runnable jar file in the 'build' directory.">
 		<!-- Convert project class path to string property -->
 		<pathconvert property="mf.classpath" pathsep=" ">
 			<mapper>
@@ -46,7 +49,8 @@
 		</pathconvert>
 
 		<!-- Exclude unit tests from the final JAR file, ANT 1.7 is required -->
-		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}" filesetmanifest="mergewithoutmain">
+		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}"
+			filesetmanifest="mergewithmain">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Created-By" value="${mf.created-by}" />
@@ -58,12 +62,14 @@
 
 	<target name="javadoc" description="--> Generates the API documentation.">
 		<mkdir dir="${javadoc.dir}" />
-		<javadoc packagenames="org.jtoc.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" author="true" version="true" use="true">
+		<javadoc packagenames="org.jtoc.*" sourcepath="${src.dir}"
+			destdir="${javadoc.dir}" author="true" version="true" use="true">
 			<classpath refid="classpath" />
 		</javadoc>
 	</target>
 
-	<target name="create-bin-zipfile" depends="jar" description="--> Generates the binary zip file.">
+	<target name="create-bin-zipfile" depends="jar"
+		description="--> Generates the binary zip file.">
 		<mkdir dir="${dist.dir}" />
 		<copy file="LICENSE.txt" todir="${build.lib}" />
 		<copy file="NOTICE.txt" todir="${build.lib}" />
@@ -75,7 +81,8 @@
 		</zip>
 	</target>
 
-	<target name="create-src-zipfile" depends="clean" description="--> Generates the source zip file.">
+	<target name="create-src-zipfile" depends="clean"
+		description="--> Generates the source zip file.">
 		<mkdir dir="${dist.dir}" />
 		<zip destfile="${srczipfile.path}">
 			<fileset dir=".">

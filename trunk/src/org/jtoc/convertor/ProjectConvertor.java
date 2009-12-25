@@ -26,7 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * class used to convert a project.
@@ -35,7 +36,7 @@ import org.apache.log4j.Logger;
  */
 public class ProjectConvertor {
 	
-	private static Logger logger = Logger.getLogger(ProjectConvertor.class.getName());
+	private static Log logger = LogFactory.getLog(ProjectConvertor.class);
 	
 	private static void convert(File inputDir, File outputDir,
 			boolean forceRewrite) throws Exception {

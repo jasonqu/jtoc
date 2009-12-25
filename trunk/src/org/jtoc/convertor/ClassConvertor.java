@@ -21,6 +21,8 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jtoc.convertor.cpunit.ClassInfo;
 import org.jtoc.convertor.cpunit.MethodInfo;
 import org.jtoc.convertor.utils.RegPatternFactory;
@@ -32,7 +34,7 @@ import org.jtoc.convertor.utils.RegPatternFactory;
  */
 public class ClassConvertor extends UnitConvertor<ClassInfo> {
 
-	//private static Logger logger = Logger.getLogger(ClassConvertor.class.getName());
+	private static Log logger = LogFactory.getLog(ClassConvertor.class.getName());
 
 	/**
 	 * set the JtocNode this Convertor represents
