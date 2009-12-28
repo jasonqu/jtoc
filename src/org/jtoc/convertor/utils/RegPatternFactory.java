@@ -139,34 +139,5 @@ public class RegPatternFactory {
 		matcher = pattern.matcher(line);
 		System.out.println(matcher.find());
 		System.out.println(line.substring(0, matcher.start()));
-		
-		pattern = RegPatternFactory.Instance().getPattern("{");
-		line = " 	{ ";
-		matcher = pattern.matcher(line);
-		System.out.println(matcher.matches());
-		System.out.println(matcher.group(1));
-		
-		pattern = RegPatternFactory.Instance().getPattern("Code{");
-		line = " 	Exception { ";
-		matcher = pattern.matcher(line);
-		System.out.println(matcher.find());
-		System.out.println(matcher.group(0));
-		System.out.println(matcher.group(1));
-		System.out.println(line.length()+" : "+matcher.end());
-		System.out.println(line.substring(matcher.end()-1, line.length()));
-		
-		line = " 	Exception {";
-		matcher = pattern.matcher(line);
-		System.out.println(matcher.find());
-		//System.out.println(matcher.group(2));
-		System.out.println(line.length()+" : "+matcher.end());
-		System.out.println(line.substring(matcher.end(), line.length()));
-		
-		line = " 	Exception{ int x";
-		matcher = pattern.matcher(line);
-		System.out.println(matcher.find());
-		System.out.println(matcher.group(0));
-		System.out.println(line.length()+" : "+matcher.end());
-		System.out.println(line.substring(matcher.end()-1, line.length()));
 	}
 }
