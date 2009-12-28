@@ -237,7 +237,7 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 	public static void main(String[] args) throws Exception{
 		// creates an input stream for the file to be parsed
 		FileInputStream in = new FileInputStream(
-				"D:/Project/Jtoc/Project/Jtoc/test/org/jtoc/convertor/cpunit/InnerTestAnnoTest.java");
+				"./test/org/jtoc/convertor/cpunit/InnerTestAnnoTest.java");
 
 		CompilationUnit cu;
 		try {

@@ -145,7 +145,7 @@ public class PreAnnotation extends JtocAnnotation {
 	public static void main(String[] args) throws Exception {
 		// creates an input stream for the file to be parsed
 		FileInputStream in = new FileInputStream(
-				"D:/Project/Jtoc/Project/Jtoc/test/org/jtoc/convertor/cpunit/PreAnnoTest.java");
+				"./test/org/jtoc/convertor/cpunit/PreAnnoTest.java");
 
 		CompilationUnit cu;
 		try {
