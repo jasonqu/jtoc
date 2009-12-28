@@ -62,13 +62,4 @@ public class Assert {
 		if (!condition)
 			throw new PreConditionException(conditionDesc, actualValue);
 	}
-
-	public static void main(String[] args) {
-		try {
-			int i = -1;
-			assertConditionSatisfied("i > 0", i > 0, i);
-		} catch (PreConditionException e) {
-			System.err.println(e.getMessage());
-		}
-	}
 }
