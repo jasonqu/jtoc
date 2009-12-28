@@ -3,10 +3,10 @@
  */
 package org.jtoc.convertor.utils;
 
-import static org.junit.Assert.*;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author QGD
  *
  */
-public class RegPatternFactoryTest {
+public class RegPatternFactoryTest extends TestCase{
 	
 	static RegPatternFactory factory;
 	Matcher matcher;
@@ -28,7 +28,6 @@ public class RegPatternFactoryTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		factory = RegPatternFactory.Instance();
 	}
 
 	/**
@@ -43,6 +42,7 @@ public class RegPatternFactoryTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		factory = RegPatternFactory.Instance();
 	}
 
 	/**
@@ -93,7 +93,55 @@ public class RegPatternFactoryTest {
 	
 	@Test
 	public void testGetPatternPost() {
+		matcher = factory.getPattern("}").matcher("  }    ");
+		assertEquals(true, matcher.matches());
+		assertEquals("  ;", matcher.group(1)+';');
 		
+		matcher = factory.getPattern("Code}").matcher("  \thaha }    ");
+		assertEquals(true, matcher.matches());
+		assertEquals("  \thaha ;", matcher.group(1) + ';');
+		// don't know what the purpose is
+//		System.out.println(matcher.group(2).substring(0,
+//				matcher.group(2).length()-1) + ';');
+		
+		matcher = factory.getPattern("return;").matcher("    	return;    \n");
+		assertEquals(true, matcher.matches());
+		
+		Pattern pattern = factory.getPattern("retWithPreCode");
+		
+		matcher = pattern.matcher("   if(true) \treturn;    ");
+		assertEquals(true, matcher.find());
+		assertEquals("   if(true) \t;", matcher.group(1) + ';');
+		assertEquals("   ;", matcher.group(2) + ';');
+
+		matcher = pattern.matcher("   if(true){}return ;");
+		assertEquals(true, matcher.find());
+		assertEquals(" ", "   if(true){}return ;".substring(0, matcher.start()+1));
+		
+		matcher = pattern.matcher("   asdreturn ;");
+		assertEquals(false, matcher.find());
+		
+		pattern = factory.getPattern("returnValue");
+		String line = "if(false) ;return(null);";
+		
+		matcher = pattern.matcher("if(false) ;return(null);");
+		assertEquals(true, matcher.find());
+		assertEquals("if(false) ;", line.substring(0, matcher.start()+1));
+		assertEquals("if(false) ;return", line.substring(0, matcher.start()+7));
+		assertEquals("24 : 18", line.length()+" : "+matcher.end());
+		assertEquals("(null);", line.substring(matcher.end()-1, line.length()));
+		
+		line = "if(false) ;return";
+		matcher = pattern.matcher(line);
+		assertEquals(true, matcher.find());
+		assertEquals("if(false) ;", line.substring(0, matcher.start()+1));
+		assertEquals("if(false) ;return", line.substring(0, matcher.start()+7));
+		assertEquals("17 : 17", line.length()+" : "+matcher.end());
+		assertEquals("n", line.substring(matcher.end()-1, line.length()));
+		
+		matcher = factory.getPattern("end;").matcher("end; ");
+		assertEquals(true, matcher.find());
+		assertEquals("end", "end; ".substring(0, matcher.start()));
 	}
 
 }

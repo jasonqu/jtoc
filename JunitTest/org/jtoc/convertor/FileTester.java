@@ -1,7 +1,8 @@
 package org.jtoc.convertor;
 
 import java.io.File;
-import java.io.IOException;
+
+import junit.framework.TestCase;
 
 import org.jtoc.convertor.utils.FileComparator;
 import org.junit.After;
@@ -10,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FileTester {
+public class FileTester extends TestCase{
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -35,6 +36,9 @@ public class FileTester {
 
 		File expectedDir = new File(root.getCanonicalPath()+"/files/expected");
 		File generatedDir = new File(root.getCanonicalPath()+"/files/generated");
+		File originalDir = new File(root.getCanonicalPath()+"/files/original");
+		
+		ProjectConvertor.convertProject(originalDir, generatedDir, true);
 		FileComparator.compare(expectedDir, generatedDir);
 	}
 }
