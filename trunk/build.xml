@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Jtoc" default="create-bin-zipfile" basedir=".">
+<project name="Jtoc" default="test" basedir=".">
 	<property file="${basedir}/default.properties" />
 
 	<path id="classpath">
@@ -20,8 +20,7 @@
 		<delete dir="${javadoc.dir}" />
 	</target>
 
-	<target name="clean-all" depends="clean"
-		description="--> Removes all generated files.">
+	<target name="clean-all" depends="clean" description="--> Removes all generated files.">
 		<delete dir="${dist.dir}" />
 	</target>
 
@@ -49,8 +48,7 @@
 		</pathconvert>
 
 		<!-- Exclude unit tests from the final JAR file, ANT 1.7 is required -->
-		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}"
-			filesetmanifest="mergewithmain">
+		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Created-By" value="${mf.created-by}" />
@@ -68,6 +66,33 @@
 		</javadoc>
 	</target>
 
+	<!-- Compile the Unit tests -->
+	<target name="compile-tests" depends="compile" description="--> Compiles unit test code.">
+		<javac srcdir="${test.src}" destdir="${build.classes}" debug="${compile.debug}"
+			deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+			<!-- classpath refid="classpath" -->
+			<classpath>
+				<pathelement location="${build.classes}" />
+				<pathelement location="${junit.jar}" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="test" depends="compile-tests">
+		<mkdir dir="${report.dir}" />
+		<junit haltonerror="${test.failonerror}">
+			<classpath refid="classpath" />
+			<classpath>
+				<pathelement location="${build.classes}" />
+				<pathelement location="${junit.jar}" />
+			</classpath>
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
+			<test name="org.jtoc.AllTests" todir="${report.dir}" />
+		</junit>
+	</target>
+	
+	<!-- The deploy targets -->
 	<target name="create-bin-zipfile" depends="jar"
 		description="--> Generates the binary zip file.">
 		<mkdir dir="${dist.dir}" />
@@ -91,4 +116,38 @@
 			</fileset>
 		</zip>
 	</target>
+
+	<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask"
+		classpath="${opt.dir}/ant-googlecode-0.0.2.jar" name="gcupload" />
+	<!-- the file must have a property named "googlecode.password" -->
+	<property file="../googlecode-user.properties" />
+
+	<target name="upload-bin" depends="create-bin-zipfile">
+		<gcupload
+			username="${googlecode.user}"
+			password="${googlecode.password}"
+			projectname="${project.name}"
+			filename="${zipfile.path}"
+			targetfilename="${zipfile.name}"
+			summary="${googlecode.file.summary} (binary)"
+			labels="${googlecode.file.labels}" />
+	</target>
+	
+	<target name="upload-src" depends="create-src-zipfile">
+		<gcupload
+			username="${googlecode.user}"
+			password="${googlecode.password}"
+			projectname="${project.name}"
+			filename="${srczipfile.path}"
+			targetfilename="${srczipfile.name}"
+			summary="${googlecode.file.summary} (source)"
+			labels="${googlecode.file.labels}" />
+	</target>
+	
+	<target name="deploy">
+		<antcall target="clean-all" />
+		<antcall target="upload-bin" />
+		<antcall target="upload-src" />
+	</target>
+	
 </project>
