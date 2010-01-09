@@ -7,10 +7,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * The File Comparator used in unit test to compare whether the 2 files are the same.
  */
 public class FileComparator {
+
+	private static Log logger = LogFactory.getLog(FileComparator.class);
 
 	/**
 	 * Method to compare two files or directories
@@ -31,7 +36,7 @@ public class FileComparator {
 	 */
 	public static void compare(File expectedFile, File actualFile)
 			throws IOException {
-		System.out.println("Comparing file " + expectedFile + " : " + actualFile);
+		logger.debug("Comparing file " + expectedFile + " : " + actualFile);
 		if (expectedFile.isDirectory() && actualFile.isDirectory())
 			for (File file : expectedFile.listFiles())
 				FileComparator.compare(expectedFile.getCanonicalPath() + '/'
