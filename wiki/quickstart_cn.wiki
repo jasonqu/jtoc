@@ -1,4 +1,4 @@
-﻿#summary An quick start page for Jtoc.
+﻿#summary Jtoc 快速开始.
 
 =Jtoc 快速开始=
 
