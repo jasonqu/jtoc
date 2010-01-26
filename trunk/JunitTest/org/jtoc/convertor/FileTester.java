@@ -11,7 +11,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class FileTester extends TestCase{
+public class FileTester{
+	
+	File expectedDir;
+	File generatedDir;
+	File originalDir;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -23,21 +27,23 @@ public class FileTester extends TestCase{
 
 	@Before
 	public void setUp() throws Exception {
+		File root = new File(".");
+		System.out.println(root.getCanonicalPath());
+		expectedDir = new File(root.getCanonicalPath()+"/files/expected");
+		generatedDir = new File(root.getCanonicalPath()+"/files/generated");
+		originalDir = new File(root.getCanonicalPath()+"/files/original");
+		
+		FileComparator.recurDelete(expectedDir);
+		expectedDir.mkdirs();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		FileComparator.recurDelete(expectedDir);
 	}
 
 	@Test
 	public void testFileCompare() throws Exception {
-		File root = new File(".");
-		System.out.println(root.getCanonicalPath());
-
-		File expectedDir = new File(root.getCanonicalPath()+"/files/expected");
-		File generatedDir = new File(root.getCanonicalPath()+"/files/generated");
-		File originalDir = new File(root.getCanonicalPath()+"/files/original");
-		
 		ProjectConvertor.convertProject(originalDir, generatedDir, true);
 		FileComparator.compare(expectedDir, generatedDir);
 	}

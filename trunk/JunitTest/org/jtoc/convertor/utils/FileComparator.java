@@ -37,11 +37,14 @@ public class FileComparator {
 	public static void compare(File expectedFile, File actualFile)
 			throws IOException {
 		logger.debug("Comparing file " + expectedFile + " : " + actualFile);
-		if (expectedFile.isDirectory() && actualFile.isDirectory())
+		if (expectedFile.isDirectory() && actualFile.isDirectory()){
+			if(expectedFile.getName().startsWith("."))
+				return;
 			for (File file : expectedFile.listFiles())
 				FileComparator.compare(expectedFile.getCanonicalPath() + '/'
 						+ file.getName(), actualFile.getCanonicalPath() + '/'
 						+ file.getName());
+		}
 		else
 			compareFile(expectedFile, actualFile);
 	}
@@ -84,5 +87,18 @@ public class FileComparator {
 			expected.close();
 			actual.close();
 		}
+	}
+	
+	/**
+	 * @param file
+	 */
+	public static void recurDelete(File file) {
+		if (file.isDirectory())
+			for(File inner : file.listFiles())
+				if(inner.isFile())
+					inner.delete();
+				else
+					recurDelete(inner);
+		file.delete();
 	}
 }
