@@ -1,0 +1,8 @@
+== Version 0.1.3: Released Jan 26 2010 ==
+  * add the quickstart document
+  * find [http://code.google.com/p/jtoc/issues/detail?id=1 issue1]
+
+== Version 0.1.2: Released Dec 22 2009 ==
+  * Change the logging tool from log4j to apache commons logging.
+  * add several unit tests
+  * add "test" and "deploy" targets on the build file
