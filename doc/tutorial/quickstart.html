@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Guodong Qu">
+<title>Jtoc QuickStart</title>
+</head>
+<body>
+
+<h1>Jtoc QuickStart</h1>
+
+<p>Guodong Qu</p>
+
+<hr WIDTH="100%">
+<br>
+<p>Soppose we have a java project called <code>jtoc-quick-sample</code>, it has a class named <code>Divider</code> only to provide a method which return the result of 2 input parameters' division. Here we used integer as the parameter's type oddly, only to show the DivideByZero Exception.</p>
+
+<pre><code>
+package jtoc.test;
+
+public class Divider {
+	public int divide(int x, int y){
+		return x/y;
+	}
+}
+</code>
+</pre>
+
+<p>Usually we could write a junit test, like this</p>
+
+<pre>
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+public class DividerTest {
+	@Test
+	public void testDivide() {
+		assertEquals("", 2, new Divider().divide(4, 2));
+	}
+}
+</pre>
+
+<p>
+Now consider to introduce the contract to constrain the input and verify the output, we should have that the divisor could not be 0, and the result should be exactly the same as the division's output.</p>
+
+<p>
+There many available contract <a href="http://en.wikipedia.org/wiki/Design_by_contract#Languages_with_third-party_support">tools</a> for java, however, I would like to show you the advantages of jtoc. To use jtoc, you need download the binary distribution from <a href="http://code.google.com/p/jtoc/downloads/list">here</a>, extract it in the project's 'lib' directory and add the jtoc.jar into the classpath.</p>
+
+<p>
+Now we could introduce the contract with jtoc, and use the junit as the assertion API, the code would be like this:</p>
+
+<pre>
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.jtoc.*;
+
+<b><font color="blue">@InnerTest</font></b>
+public class Divider {
+	<b><font color="blue">@Pre @Post</font></b>
+	public int divide(int x, int y){
+		return x/y;
+	}
+	
+	@SuppressWarnings("unused")
+	private class InnerTest {
+		public void dividePreCheck(int x, int y){
+			assertNotSame("", 0, y);
+		}
+		
+		public int dividePostCheck(int result, int x, int y){
+			assertEquals("", result, x/y);
+			return result;
+		}
+	}
+}
+</pre>
+
+<p>
+Now we need to use jtoc to convert this project into a test project where the contracts could actually work. We need to write a ant build file like this[now the invocation methods of jtoc is limited to ant and console, but the eclipse plugin is under development] :</P>
+
+<pre><code>
+<?xml version="1.0" ?>
+&lt;?xml version="1.0" ?&gt;
+&lt;project name="AntExample" default="jtoc"&gt;
+	&lt;path id="jtoc.jar"&gt;
+		&lt;pathelement location="./lib/jtoc-0.1.2.jar" /&gt;
+	&lt;/path&gt;
+
+	&lt;target name="jtoc"&gt;
+		&lt;taskdef name="jtoc" classname="org.jtoc.ant.ConvertTask"&gt;
+			&lt;classpath refid="jtoc.jar" /&gt;
+		&lt;/taskdef&gt;
+		&lt;jtoc srcDir="." destDir="../jtoc-quick-sample2/" rewrite="false"/&gt;
+	&lt;/target&gt;
+&lt;/project&gt;
+</code></pre>
+
+<p>
+Run the ant target, then we have a project named <code>jtoc-quick-sample2</code>, where the <code>Divider</code>'s source file is converted to be be like this:</p>
+
+<pre>
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.jtoc.*;
+
+public class Divider {
+	public int divide(int x, int y){
+		innerTest.dividePreCheck(x, y);
+		return innerTest.dividePostCheck(( x/y), x, y);
+	}
+	
+	@SuppressWarnings("unused")
+	private class InnerTest {
+		public void dividePreCheck(int x, int y){
+			assertNotSame("", 0, y);
+		}
+		
+		public int dividePostCheck(int result, int x, int y){
+			assertEquals("", result, x/y);
+			return result;
+		}
+	}
+
+	InnerTest innerTest = new InnerTest();
+}
+</pre>
+
+<p>
+Now, we can see that, without learning new grammar, the contracts are added to the class <code>Divider</code>. Now try the unit test, it works as well; so here is one advantage of jtoc: if you write the contracts right, it will not break you original unit tests.</p>
+
+<p>
+P.S Some may wondered why we generated the source files rather than directly generated the class files? The reason is that the programmers need an easy way to trace the failed test, and it would be better if there are source file to refer to; however, if the programmers do not want to see the generated source files, it is not hard to write an ant target to generate the class files directly. </p>
+
+<p>
+Now we could add tests for Divider without considering the expected output, because the constraint we added by contracts would help us to restrain the software's behavior, which is another advantage of jtoc. Here is an example, notice we wisely avoid the 0 in the dividers because we know that not assign the divider to zero is the contract to apply in order to use this class</p>
+
+<pre>
+	@Test
+	public void testDivideWithJtoc() {
+		int[] divideds = new int[]{ 0, 4, 10 , -30, Integer.MAX_VALUE};
+		int[] dividers = new int[]{ 2, 10 , -30, Integer.MAX_VALUE};
+		for(int divided : divideds)
+			for(int divider : dividers)
+				new Divider().divide(divided, divider);
+	}
+</pre>
+
+<p>
+Without much extra work, we run many cases without specifically assignning the result. Now the original 'testDivide' seemed to be useless and not proper to be kept in the test class, but how would we know that the results is exactly the same we expected.</p>
+
+<p>
+To assure this, one could keep the old unit tests, which as showed above. Well we also could choose write the test case in the contracts like the one showed in below</p>
+
+<pre>
+		public int dividePostCheck(int result, int x, int y){
+			// the original 'testDivide' test case
+			if(4 == x && 2 == y) assertEquals("", 2, result);
+
+			assertEquals("", result, x/y);
+			return result;
+		}
+</pre>
+
+<p>
+Notice not to write the test case like this "<code>if(4 == x && 2 == y) assertEquals("", 2, new Divider().divide(4, 2), 0.001);</code>", which will be run as endless loop.</p>
+
+<p>
+Now as you can see, with the code written in java, we could easily locate the test contracts and write them no matter how complex they are.</p>
+
+<p>
+Finally I would like to introduce one of the most important reason for using jtoc: the contracts also work with higher invocation.</p>
+
+<p>
+Suppose we have another class called '<code>ArrayDivider</code>' which use '<code>Divider</code>' as its component. As inferred by its name, the class provide a method to divide 2 int array with the same length, and return the result. As you can see in the code, it has its Pre condition checker to make sure the inputed array are of the same length and the Post condition checker to make sure the result is right.</p>
+
+<pre>
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.jtoc.*;
+
+@InnerTest
+public class ArrayDivider {
+	@Pre @Post
+	public int[] divide(int[] xarray, int[] yarray){
+		int[] result = new int[xarray.length];
+		for(int i = 0; i&lt;xarray.length; i++ )
+			result[i] = new Divider().divide(xarray[i], yarray[i]);
+		return result;
+	}
+	
+	@SuppressWarnings("unused")
+	private class InnerTest {
+		public void dividePreCheck(int[] xarray, int[] yarray){
+			assertEquals("", xarray.length, yarray.length);
+		}
+		
+		public int[] dividePostCheck(final int[] result, int[] xarray, int[] yarray){
+			for(int i = 0; i&lt;xarray.length; i++ )
+				assertEquals("", result[i], xarray[i]/yarray[i]);
+			return result;
+		}
+	}
+}
+</pre>
+
+<p>
+We can write a test like this</p>
+
+<pre>
+package jtoc.test;
+
+import org.junit.Test;
+
+public class ArrayDividerTest {
+	@Test
+	public void testDivide() {
+		int[] divideds = new int[] { 0, 10, -30, Integer.MAX_VALUE };
+		int[] dividers = new int[] { 0, 10, -30, Integer.MAX_VALUE };
+		new ArrayDivider().divide(divideds, dividers);
+	}
+}
+</pre>
+
+<p>
+After we converted the project and run it... oops, an exception occured. The <code>Divider</code>'s contract is broken, and this error is easier to trace with the source code of the test project. </p>
+
+<p>
+This is the Quick Start over the jtoc, to know more and to customize yoour own contracts, please read jtoc's <a href="http://code.google.com/p/jtoc/wiki/cookbook">cookbook</a>. </p>
+<hr WIDTH="100%">
+</body>
+</html>

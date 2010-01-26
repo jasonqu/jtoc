@@ -40,6 +40,9 @@ public class ProjectConvertor {
 	
 	private static void convert(File inputDir, File outputDir,
 			boolean forceRewrite) throws Exception {
+		if(inputDir.getName().startsWith(".svn"))
+			return;
+		
 		if (!inputDir.exists())
 			throw new Exception(
 					"The specified input Directory is not existed : "

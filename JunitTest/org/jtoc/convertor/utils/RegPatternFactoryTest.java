@@ -3,10 +3,10 @@
  */
 package org.jtoc.convertor.utils;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author QGD
  *
  */
-public class RegPatternFactoryTest extends TestCase{
+public class RegPatternFactoryTest{
 	
 	static RegPatternFactory factory;
 	Matcher matcher;

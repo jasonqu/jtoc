@@ -1,16 +1,14 @@
 package org.jtoc;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-import org.jtoc.Assert;
-import org.jtoc.PreConditionException;
 import org.junit.Test;
 
 /**
  * @author GoddamnedQu
  *
  */
-public class ConditionExceptionTest extends TestCase {
+public class ConditionExceptionTest {
 
 	/**
 	 * Test method for {@link org.jtoc.PreConditionException#getMessage()}.

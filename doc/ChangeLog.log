@@ -1,7 +1,0 @@
-== Version 0.1.2: Released Dec 22 2009 ==
-
-* Change the logging tool from log4j to apache commons logging.
-
-* add several unit tests
-
-* add "test" and "deploy" targets on the build file

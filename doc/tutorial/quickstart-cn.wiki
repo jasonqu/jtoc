@@ -1,0 +1,225 @@
+#summary An quick start page for Jtoc.
+
+=Jtoc 快速开始=
+
+<p>Guodong Qu</p>
+
+<hr WIDTH="100%">
+<br>
+<p>假设我们有这样一个java工程，名为`jtoc-quick-sample`，它包含一个名为Divider的类，其作用仅仅是提供一个使两个整数想整除的方法。在这里之所以使用int类型而不是double类型，是为了让方法能够抛出“被零除”的异常。</p>
+
+{{{
+package jtoc.test;
+
+public class Divider {
+	public int divide(int x, int y){
+		return x/y;
+	}
+}
+}}}
+
+<p>通常我们可以这样写一个单元测试</p>
+
+{{{
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+
+public class DividerTest {
+	@Test
+	public void testDivide() {
+		assertEquals("", 2, new Divider().divide(4, 2));
+	}
+}
+}}}
+
+<p>
+现在我们考虑引入契约来限制输入，并检验输出，则我们应该引入下面的条件：除数不能为零，而且该方法的结果应该和两个参数相除的结果是相同的。</p>
+
+<p>
+现在有很多种编写契约的<a href="http://en.wikipedia.org/wiki/Design_by_contract#Languages_with_third-party_support">工具</a>不过这里将只向您介绍一下jtoc的优点。要使用jtoc，您需要点击<a href="http://code.google.com/p/jtoc/downloads/list">这里</a>下载最新版本的jtoc的zip包，并将该包解压在该工程的lib文件夹中；并将jtoc.jar文件加入classpath中。</p>
+
+<p>
+这样我们就可以在代码中使用jtoc编写断言了。我们不需要使用高深的知识，只需要使用junit的断言API就可以了，写出的代码像这样：</p>
+
+{{{
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.jtoc.*;
+
+<b><font color="blue">@InnerTest</font></b>
+public class Divider {
+	<b><font color="blue">@Pre @Post</font></b>
+	public int divide(int x, int y){
+		return x/y;
+	}
+	
+	@SuppressWarnings("unused")
+	private class InnerTest {
+		public void dividePreCheck(int x, int y){
+			assertNotSame("", 0, y);
+		}
+		
+		public int dividePostCheck(int result, int x, int y){
+			assertEquals("", result, x/y);
+			return result;
+		}
+	}
+}
+}}}
+
+<p>
+现在我们需要使用jtoc来把工程重编译成一个测试工程，在那里这些契约将真正起到作用。首先我们需要编写这样一个ant构建文件[目前jtoc只提供了ant和控制台调用方式，其Eclipse插件正在开发中]:</P>
+
+{{{
+<?xml version="1.0" ?>
+<project name="AntExample" default="jtoc">
+	<path id="jtoc.jar">
+		<pathelement location="./lib/jtoc-0.1.2.jar" />
+	</path>
+
+	<target name="jtoc">
+		<taskdef name="jtoc" classname="org.jtoc.ant.ConvertTask">
+			<classpath refid="jtoc.jar" />
+		</taskdef>
+		<jtoc srcDir="." destDir="../jtoc-quick-sample2/" rewrite="false"/>
+	</target>
+</project>
+}}}
+
+<p>
+运行这个ant脚本，我们就在`jtoc-quick-sample`的同级目录上生成了一个名为`jtoc-quick-sample2`的工程，此时类`Divider`的源代码被转换成这样：</p>
+
+{{{
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.jtoc.*;
+
+public class Divider {
+	public int divide(int x, int y){
+		<b><font color="blue">innerTest.dividePreCheck(x, y);
+		return innerTest.dividePostCheck(( x/y), x, y);</font></b>
+	}
+	
+	@SuppressWarnings("unused")
+	private class InnerTest {
+		public void dividePreCheck(int x, int y){
+			assertNotSame("", 0, y);
+		}
+		
+		public int dividePostCheck(int result, int x, int y){
+			assertEquals("", result, x/y);
+			return result;
+		}
+	}
+
+	<b><font color="blue">InnerTest innerTest = new InnerTest();</font></b>
+}
+}}}
+
+<p>
+现在我们可以看到，不需要学习新的语法，契约就被加在了类`Divider`的方法中。现在运行一下原来编写的单元测试，运行良好！这就是jtoc的一个优点：如果你的契约是正确的，那么在测试工程中，原来编写的单元测试仍然有效。</p>
+
+<p>
+[注：一些人可能觉得奇怪，为什么要生成测试工程的源文件，而不是直接生成测试工程的类文件呢？原因是程序员需要一个简单的方法来跟踪一个失败的测试，如果有源文件用来调试当然就很方便了；当然，如果程序员压根就不想看到这些测试源文件，而想直接运行测试，那使用ant直接生成这些测试源文件的类文件也不是一件困难的事情。]</p>
+
+<p>
+现在我们可以自由地给`Divider`添加测试用例而不需要给出其期望的输出，因为我们添加的契约将帮助我们限制程序的行为，这也是jtoc的另一个优点。下面就是一个例子，注意到我们明智的避免将0作为除数输入，因为使用该方法需要遵守其非零除数的契约要求：</p>
+
+{{{
+	@Test
+	public void testDivideWithJtoc() {
+		int[] divideds = new int[]{ 0, 4, 10 , -30, Integer.MAX_VALUE};
+		int[] dividers = new int[]{ 2, 10 , -30, Integer.MAX_VALUE};
+		for(int divided : divideds)
+			for(int divider : dividers)
+				new Divider().divide(divided, divider);
+	}
+}}}
+
+<p>
+没有编写很多代码，没有指定其期望的结果，我们就运行了很多测试。此时原始的`testDivide`似乎显得有点低效和多余，但是有时手动写出会让程序员放心些，因为这样他们就知道程序运行的结果和他们期望的是一样的。</p>
+
+<p>
+为了保证这点，我们可以将老的单元测试进行保留；或者我们也可以选择将测试写在契约中，像这样：</p>
+
+{{{
+		public int dividePostCheck(int result, int x, int y){
+			<b><font color="blue">// the original 'testDivide' test case
+			if(4 == x && 2 == y) assertEquals("", 2, result);</font></b>
+
+			assertEquals("", result, x/y);
+			return result;
+		}
+}}}
+
+<p>
+注意不要将测试用例写成：`"if(4 == x && 2 == y) assertEquals("", 2, new Divider().divide(4, 2), 0.001);"`，这样将会造成死循环。</p>
+
+<p>
+现在可以看到，由于是使用的java来编写，我们能够方便的定位到测试契约，并且可以写出很复杂的测试断言。</p>
+
+<p>
+最后，我想介绍一下使用jtoc的一个重要的好处：在更高层的调用中，这些契约仍然能得到正确地执行。</p>
+
+<p>
+假设我们拥有另一个名为`ArrayDivider`的类，它使用`Divider`类作为其功能的提供者。就像他的名字所暗示的，`ArrayDivider`提供了一个方法，将输入的两个等长度的整数数组逐个相除，并将其结果返回。从代码中可以看出，它拥有一个前置断言保证两个数组是相同长度的，并拥有一个后置断言保证其结果是正确的。</p>
+
+{{{
+package jtoc.test;
+
+import static org.junit.Assert.*;
+import org.jtoc.*;
+
+@InnerTest
+public class ArrayDivider {
+	@Pre @Post
+	public int[] divide(int[] xarray, int[] yarray){
+		int[] result = new int[xarray.length];
+		for(int i = 0; i&lt;xarray.length; i++ )
+			result[i] = new Divider().divide(xarray[i], yarray[i]);
+		return result;
+	}
+	
+	@SuppressWarnings("unused")
+	private class InnerTest {
+		public void dividePreCheck(int[] xarray, int[] yarray){
+			assertEquals("", xarray.length, yarray.length);
+		}
+		
+		public int[] dividePostCheck(final int[] result, int[] xarray, int[] yarray){
+			for(int i = 0; i&lt;xarray.length; i++ )
+				assertEquals("", result[i], xarray[i]/yarray[i]);
+			return result;
+		}
+	}
+}
+}}}
+
+<p>
+我们可以针对这个类写出这样的测试：</p>
+
+{{{
+package jtoc.test;
+
+import org.junit.Test;
+
+public class ArrayDividerTest {
+	@Test
+	public void testDivide() {
+		int[] divideds = new int[] { 0, 10, -30, Integer.MAX_VALUE };
+		int[] dividers = new int[] { 0, 10, -30, Integer.MAX_VALUE };
+		new ArrayDivider().divide(divideds, dividers);
+	}
+}
+}}}
+
+<p>
+我们将工程进行转换，并运行该测试...oops，发现了一个异常。`Divider`的契约被破坏了，而由于有测试工程的代码，我们能比较容易的找到这个错误。</p>
+
+<p>
+这是一个jtoc的快速开始介绍，要了解更多的关于jtoc提供的功能，并配置你自己的契约，请阅读jtoc的<a href="http://code.google.com/p/jtoc/wiki/cookbook">cookbook</a>。</p>
+<hr WIDTH="100%">
