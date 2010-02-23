@@ -34,11 +34,11 @@ public abstract class UnitConvertor<C extends JtocNode> {
 	
 	private static Log logger = LogFactory.getLog(UnitConvertor.class);
 
-	// the number and the content of the line being parsed
+	/** the number and the content of the line being parsed */
 	protected static int lineNum = 0;
 	protected static String line = "";
 	
-	// the JtocNode this Convertor represents
+	/** the JtocNode this Convertor represents */
 	protected C unit = null;
 
 	/**

@@ -29,7 +29,7 @@ import japa.parser.ast.expr.StringLiteralExpr;
  */
 public abstract class JtocNode<C extends Node> {
 
-	// All nodes refer to the same file in every conversion
+	/** All nodes refer to the same file in every conversion */
 	protected static String filename = "";
 
 	/**
@@ -51,7 +51,7 @@ public abstract class JtocNode<C extends Node> {
 		JtocNode.filename = filename;
 	}
 
-	// the compile unit this JtocNode contains
+	/** the compile unit this JtocNode contains */
 	C unit = null;
 
 	public JtocNode(C c) {

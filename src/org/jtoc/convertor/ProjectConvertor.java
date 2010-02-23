@@ -37,10 +37,26 @@ import org.apache.commons.logging.LogFactory;
 public class ProjectConvertor {
 	
 	private static Log logger = LogFactory.getLog(ProjectConvertor.class);
+
+	// inspired by org.apache.tools.ant.DirectoryScanner
+	private static final String[] defaultExcludes = new String[] {
+		"CVS", ".cvsignore", // CVS
+		"SCCS", // SCCS
+		"vssver.scc", // Visual SourceSafe
+		".svn", // Subversion
+		".DS_Store" // Mac
+	};
+	
+	static boolean shouldExclude(String filename) {
+		for (String exclude : defaultExcludes)
+			if (exclude.equalsIgnoreCase(filename))
+				return true;
+		return false;
+	}
 	
 	private static void convert(File inputDir, File outputDir,
 			boolean forceRewrite) throws Exception {
-		if(inputDir.getName().startsWith(".svn"))
+		if(shouldExclude(inputDir.getName()))
 			return;
 		
 		if (!inputDir.exists())
@@ -49,15 +65,16 @@ public class ProjectConvertor {
 							+ inputDir.getAbsolutePath());
 
 		if (!outputDir.exists()){
-			logger.debug("Makeing directory "+outputDir.getAbsolutePath());
+			logger.debug("Making directory "+outputDir.getAbsolutePath());
 			outputDir.mkdir();
 		}
 
 		for (File origin : inputDir.listFiles()) {
 			File output = new File(outputDir.getAbsolutePath() + '/'
 					+ origin.getName());
-			if (origin.isDirectory())
+			if (origin.isDirectory()){
 				ProjectConvertor.convert(origin, output, forceRewrite);
+			}
 			else if (origin.getName().toLowerCase().endsWith(".java")) {
 				if ((origin.lastModified() > output.lastModified())
 						|| forceRewrite)
@@ -95,10 +112,13 @@ public class ProjectConvertor {
 	 */
 	private static void copyfile(File srcFile, File destFile)
 			throws IOException {
+//		if(shouldExclude(srcFile.getName()))
+//			return;
+		
 		logger.debug("copying form file " + srcFile.getName() + " to "
 				+ destFile.getAbsolutePath());
+		
 		InputStream in = new BufferedInputStream(new FileInputStream(srcFile));
-
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(
 				destFile));
 
@@ -122,8 +142,6 @@ public class ProjectConvertor {
 				return;
 			}
 
-//			File inputDir = new File("E:/Project/Jtoc/Projects/JtocInput/");
-//			File outputDir = new File("E:/Project/Jtoc/Projects/JtocOutput/");
 			File inputDir = null;
 			File outputDir = null;
 			boolean rewrite = false;

@@ -103,19 +103,27 @@ public class SingleFileConvertor extends UnitConvertor<ClassInfo>  {
 				}
 			}
 			
+			in.close();
+			out.close();
 		} catch (Exception e) {
 			logger.error("Exception occurs, converting stops : ", e);
 			throw e;
 		}finally{
-			//out.close();
+//			out.close();
 		}
 	}
 	
 	public static void main(String[] args) throws Exception {
+		File root = new File(".");
+		System.out.println(root.getCanonicalPath());
+		File origin = new File(root.getCanonicalPath()+"/files/original/src/jtoc/test/Person.java");
+		File generated = new File(root.getCanonicalPath()+"/files/generated/src/jtoc/test/Person.java");
+
 		SingleFileConvertor sc = new SingleFileConvertor();
-		sc.convert(
-				"D:/Project/Jtoc/Project_SVN/JtocInput/src/junit/samples/money/Money.java",
-				"D:/Project/Jtoc/Project_SVN/JtocOutput/src/junit/samples/money/Money.java");
+		sc.convert(origin, generated);
+//		sc.convert(
+//				"D:/Project/Jtoc/Project_SVN/JtocInput/src/junit/samples/money/Money.java",
+//				"D:/Project/Jtoc/Project_SVN/JtocOutput/src/junit/samples/money/Money.java");
 
 //		sc.convert(
 //				"D:/Project/Jtoc/Project/JtocInput/src/jtoc/test/Person.java",
