@@ -1,4 +1,5 @@
 #summary An quick start page for Jtoc.
+#labels Jtoc,Featured,Java,designbycontract
 
 =Jtoc QuickStart=
 

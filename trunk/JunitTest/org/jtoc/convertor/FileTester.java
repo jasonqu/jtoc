@@ -4,7 +4,6 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.jtoc.convertor.utils.FileComparator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -33,18 +32,19 @@ public class FileTester{
 		generatedDir = new File(root.getCanonicalPath()+"/files/generated");
 		originalDir = new File(root.getCanonicalPath()+"/files/original");
 		
-		FileComparator.recurDelete(expectedDir);
-		expectedDir.mkdirs();
+		FileComparator.recurDelete(generatedDir);
+		generatedDir.mkdirs();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		FileComparator.recurDelete(expectedDir);
+		// FileComparator.recurDelete(generatedDir);
 	}
 
 	@Test
 	public void testFileCompare() throws Exception {
 		ProjectConvertor.convertProject(originalDir, generatedDir, true);
 		FileComparator.compare(expectedDir, generatedDir);
+		FileComparator.recurDelete(generatedDir);
 	}
 }

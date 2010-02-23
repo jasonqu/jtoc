@@ -74,6 +74,9 @@
 			<classpath>
 				<pathelement location="${build.classes}" />
 				<pathelement location="${junit.jar}" />
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
 			</classpath>
 		</javac>
 	</target>

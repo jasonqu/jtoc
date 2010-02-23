@@ -1,4 +1,4 @@
-package org.jtoc.convertor.utils;
+package org.jtoc.convertor;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,7 +38,7 @@ public class FileComparator {
 			throws IOException {
 		logger.debug("Comparing file " + expectedFile + " : " + actualFile);
 		if (expectedFile.isDirectory() && actualFile.isDirectory()){
-			if(expectedFile.getName().startsWith("."))
+			if(ProjectConvertor.shouldExclude(expectedFile.getName()))
 				return;
 			for (File file : expectedFile.listFiles())
 				FileComparator.compare(expectedFile.getCanonicalPath() + '/'
@@ -68,6 +68,9 @@ public class FileComparator {
 	 */
 	public static void compareFile(File expectedFile, File actualFile)
 			throws IOException {
+		if(ProjectConvertor.shouldExclude(expectedFile.getName()))
+			return;
+		
 		BufferedReader expected = new BufferedReader(new FileReader(expectedFile));
 		BufferedReader actual = new BufferedReader(new FileReader(actualFile));
 
