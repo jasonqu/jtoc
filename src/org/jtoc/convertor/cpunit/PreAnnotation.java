@@ -17,16 +17,7 @@
 
 package org.jtoc.convertor.cpunit;
 
-import japa.parser.ast.CompilationUnit;
-import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
-
-import java.io.FileInputStream;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * class used to contain information of the Pre Jtoc Annotation.
@@ -35,10 +26,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PreAnnotation extends JtocAnnotation {
 
-	private static Log logger = LogFactory.getLog(PreAnnotation.class);
-
 	/**
 	 * used for test
+	 *  XXX need to be deleted
 	 */
 	public PreAnnotation() {
 		this(null);
@@ -56,20 +46,23 @@ public class PreAnnotation extends JtocAnnotation {
 	}
 
 	/**
-	 * the method to determine whether the input annotation expr is an Instance
+	 * to determine whether the input expression is an Instance of PreAnnotation
 	 * 
-	 * @param content
-	 *            annotation expr
-	 * @return
+	 * @param annotation
+	 *            the annotation
+	 * @return true if the annotation's name is "Pre"
 	 */
-	public static boolean isInstance(String content) {
-		return content != null
-				&& (content.equals("@Pre") || content.startsWith("@Pre("));
+	public static boolean isInstance(AnnotationExpr annotation) {
+		return annotation != null && annotation.getName().getName().equals("Pre");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.jtoc.convertor.cpunit.JtocAnnotation#isInstanceLocal(java.lang.String)
+	 */
+	// XXX seems to be useless
 	@Override
 	protected boolean isInstanceLocal(String content) {
-		return PreAnnotation.isInstance(content);
+		return false;
 	}
 
 	/**
@@ -82,7 +75,8 @@ public class PreAnnotation extends JtocAnnotation {
 	 */
 	public static PreAnnotation getPreAnnotationFromAnnoExpr(AnnotationExpr ae)
 			throws JtocFormatException {
-		if (!isInstance(ae.toString()))
+		// XXX need refactor
+		if (!isInstance(ae))
 			return null;
 		PreAnnotation pa = new PreAnnotation(ae);
 		pa.parse();
@@ -110,55 +104,4 @@ public class PreAnnotation extends JtocAnnotation {
 		return sb.toString();
 	}
 
-	/**
-	 * test class
-	 */
-	class MethodVisitor extends VoidVisitorAdapter<Object> {
-		public MethodVisitor() {
-		}
-
-		@Override
-		public void visit(MethodDeclaration n, Object arg) {
-			List<AnnotationExpr> list = n.getAnnotations();
-			if (list == null) // the method has no annotation.
-				return;
-
-			try {
-				for (AnnotationExpr ae : list) {
-					if (PreAnnotation.isInstance(ae.toString())) {
-						PreAnnotation i = new PreAnnotation(ae);
-						i.parse();
-						logger.info(i.toString());
-					}
-				}
-			} catch (JtocFormatException e) {
-				logger.error(e.getMessage());
-			}
-		}
-	}
-
-	/**
-	 * test method
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception {
-		// creates an input stream for the file to be parsed
-		FileInputStream in = new FileInputStream(
-				"./test/org/jtoc/convertor/cpunit/PreAnnoTest.java");
-
-		CompilationUnit cu;
-		try {
-			// parse the file
-			cu = japa.parser.JavaParser.parse(in);
-		} finally {
-			in.close();
-		}
-
-		PreAnnotation pa = new PreAnnotation();
-		// visit and print the methods names
-		JtocNode.setFilename("PreAnnoTest.java");
-		MethodVisitor visitor = pa.new MethodVisitor();
-		visitor.visit(cu, null);
-	}
 }

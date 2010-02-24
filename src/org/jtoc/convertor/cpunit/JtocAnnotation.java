@@ -37,6 +37,7 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 
 	/**
 	 * used for test
+	 * XXX need to be deleted
 	 */
 	public JtocAnnotation() {
 		this(null);
@@ -130,10 +131,11 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 		this.parameters = parameters;
 	}
 	
+	/** used to pull up the parse method */
 	protected String head = "";
 
 	/**
-	 * get the Sting represents the Marker format of the Annotation
+	 * get the String represents the Marker format of the Annotation
 	 * 
 	 * @return should only be "@Pre" or "@Post"
 	 */
@@ -142,20 +144,22 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 	}
 
 	/**
-	 * set the Sting represents the Marker format of the Annotation
+	 * set the String represents the Marker format of the Annotation
 	 * 
 	 * @param head should only be "@Pre" or "@Post"
 	 */
 	protected void setHead(String head) {
 		this.head = head;
 	}
-	
+
 	/**
-	 * the method to determine what type the input annotation expr is.
+	 * XXX seems to useless
+	 * to determine whether the input expression is an Instance of
+	 * JtocAnnotation
 	 * 
 	 * @param content
 	 *            annotation expr
-	 * @return
+	 * @return true if the expression is an Instance of JtocAnnotation
 	 */
 	protected abstract boolean isInstanceLocal(String content);
 
@@ -167,21 +171,23 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 	 */
 	@SuppressWarnings("static-access")
 	public void parse() throws JtocFormatException {
+		// XXX need refactor
 		String content = this.unit.toString();
 		
-		if (!this.isInstanceLocal(content))
-			return;
+		// XXX proved to be useless
+		// if (!this.isInstanceLocal(content)) return;
 		
 		logger.debug("Begin parse : "+content);
 		this.init();
 		
+		// default value
 		if (content.equals(this.getHead()))
 			return;
 		
 		logger.debug(this.unit.getClass().toString());
 		if(unit instanceof NormalAnnotationExpr){
-			NormalAnnotationExpr nu = (NormalAnnotationExpr)unit;
-			List<MemberValuePair> list = nu.getPairs();
+			List<MemberValuePair> list = ((NormalAnnotationExpr)unit).getPairs();
+			// XXX might could be deleted
 			if (list == null)
 				return;
 			

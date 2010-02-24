@@ -112,8 +112,9 @@ public class ProjectConvertor {
 	 */
 	private static void copyfile(File srcFile, File destFile)
 			throws IOException {
-//		if(shouldExclude(srcFile.getName()))
-//			return;
+		// XXX need refactor
+		if(shouldExclude(srcFile.getName()))
+			return;
 		
 		logger.debug("copying form file " + srcFile.getName() + " to "
 				+ destFile.getAbsolutePath());
