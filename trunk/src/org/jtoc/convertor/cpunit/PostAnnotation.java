@@ -17,16 +17,7 @@
 
 package org.jtoc.convertor.cpunit;
 
-import japa.parser.ast.CompilationUnit;
-import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
-
-import java.io.FileInputStream;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * class used to contain information of the Post Jtoc Annotation.
@@ -35,10 +26,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PostAnnotation extends JtocAnnotation {
 
-	private static Log logger = LogFactory.getLog(PostAnnotation.class);
-	
 	/**
 	 * used for test
+	 * XXX need to be deleted
 	 */
 	public PostAnnotation() {
 		this(null);
@@ -62,14 +52,25 @@ public class PostAnnotation extends JtocAnnotation {
 	 *            annotation expr
 	 * @return
 	 */
-	public static boolean isInstance(String content) {
-		return content != null
-				&& (content.equals("@Post") || content.startsWith("@Post("));
+//	public static boolean isInstance(String content) {
+//		return content != null
+//				&& (content.equals("@Post") || content.startsWith("@Post("));
+//	}
+	
+	/**
+	 * to determine whether the input expression is an Instance of PostAnnotation
+	 * 
+	 * @param annotation
+	 *            the annotation
+	 * @return true if the annotation's name is "Post"
+	 */
+	public static boolean isInstance(AnnotationExpr annotation) {
+		return annotation != null && annotation.getName().getName().equals("Post");
 	}
 	
 	@Override
 	protected boolean isInstanceLocal(String content) {
-		return PostAnnotation.isInstance(content);
+		return false;
 	}
 	
 	/**
@@ -81,7 +82,7 @@ public class PostAnnotation extends JtocAnnotation {
 	 * @throws JtocFormatException
 	 */
 	public static PostAnnotation getPostAnnotationFromAnnoExpr(AnnotationExpr ae) throws JtocFormatException{
-		if(!isInstance(ae.toString()))
+		if(!isInstance(ae))
 			return null;
 		PostAnnotation pa = new PostAnnotation(ae);
 		pa.parse();
@@ -168,53 +169,4 @@ public class PostAnnotation extends JtocAnnotation {
 		return sb.toString();
 	}
 
-	/**
-	 * test class
-	 */
-	class MethodVisitor extends VoidVisitorAdapter<Object> {
-		public MethodVisitor(){}
-		
-		@Override
-		public void visit(MethodDeclaration n, Object arg) {
-			List<AnnotationExpr> list = n.getAnnotations();
-			if (list == null) // the method has no annotation.
-				return;
-			
-			try {
-				for (AnnotationExpr ae : list) {
-					if(PostAnnotation.isInstance(ae.toString())){
-						PostAnnotation i = new PostAnnotation(ae);
-						i.parse();
-						System.out.println(i.toString());
-					}
-				}
-			} catch (JtocFormatException e) {
-				logger.error(e.getMessage());
-			}
-		}
-	}
-	
-	/**
-	 * test method
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception{
-		// creates an input stream for the file to be parsed
-		FileInputStream in = new FileInputStream(
-				"./test/org/jtoc/convertor/cpunit/PreAnnoTest.java");
-
-		CompilationUnit cu;
-		try {
-			// parse the file
-			cu = japa.parser.JavaParser.parse(in);
-		} finally {
-			in.close();
-		}
-
-		PostAnnotation pa = new PostAnnotation();
-		// visit and print the methods names
-		JtocNode.setFilename("PreAnnoTest.java");
-		MethodVisitor visitor = pa.new MethodVisitor();
-		visitor.visit(cu, null);
-	}
 }

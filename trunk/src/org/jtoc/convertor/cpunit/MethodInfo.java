@@ -212,9 +212,9 @@ public class MethodInfo extends JtocNode<MethodDeclaration> {
 
 		logger.debug("parse method : " + this.unit.getName());
 		for (AnnotationExpr ae : list) {
-			if (PreAnnotation.isInstance(ae.toString())) {
+			if (PreAnnotation.isInstance(ae)) {
 				this.setPreAnno(PreAnnotation.getPreAnnotationFromAnnoExpr(ae));
-			} else if (PostAnnotation.isInstance(ae.toString())) {
+			} else if (PostAnnotation.isInstance(ae)) {
 				this.setPostAnno(PostAnnotation
 						.getPostAnnotationFromAnnoExpr(ae));
 			} else {

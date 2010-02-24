@@ -13,7 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 
 package org.jtoc.convertor.cpunit;
 
@@ -54,6 +54,12 @@ public abstract class JtocNode<C extends Node> {
 	/** the compile unit this JtocNode contains */
 	C unit = null;
 
+	/**
+	 * Constructor with a compile unit as the parameter
+	 * 
+	 * @param c
+	 *            the compile unit whose type is Node in javaparser
+	 */
 	public JtocNode(C c) {
 		this.unit = c;
 	}
@@ -77,31 +83,37 @@ public abstract class JtocNode<C extends Node> {
 	}
 
 	/**
-	 * Get the String array value of the param pair
+	 * Get the String array value of the param pair. Used for the parsing the
+	 * array parameter of the InnerTestAnnotation
 	 * 
 	 * @param mp
+	 *            the input compiled unit
 	 * @return value of the param pair; null if it is not a String Array
 	 */
 	protected final String[] getStringArrayFromValue(MemberValuePair mp) {
-		if (mp.getValue() instanceof StringLiteralExpr) {
+		if (mp.getValue() instanceof StringLiteralExpr) // array with one value
 			return new String[] { ((StringLiteralExpr) mp.getValue())
 					.getValue() };
-		} else if (mp.getValue() instanceof ArrayInitializerExpr) {
-			StringLiteralExpr[] t = (StringLiteralExpr[]) ((ArrayInitializerExpr) mp
-					.getValue()).getValues().toArray(new StringLiteralExpr[0]);
-			String[] result = new String[t.length];
-			for (int i = 0; i < t.length; i++) {
-				result[i] = t[i].getValue();
-			}
-			return result;
-		}
-		return null;
+
+		if (!(mp.getValue() instanceof ArrayInitializerExpr)) // should not happen
+			return null;
+
+		// deal with the Array Initializer Expression
+		StringLiteralExpr[] t = (StringLiteralExpr[]) ((ArrayInitializerExpr) mp
+				.getValue()).getValues().toArray(new StringLiteralExpr[0]);
+		String[] result = new String[t.length];
+
+		for (int i = 0; i < t.length; i++)
+			result[i] = t[i].getValue();
+		return result;
 	}
 
 	/**
-	 * Get the String value of the param pair
+	 * Get the String value of the param pair. Used for the parsing the
+	 * parameter of the JtocAnnotation
 	 * 
 	 * @param mp
+	 *            the input compiled unit
 	 * @return value of the param pair; null if it is not a String
 	 */
 	protected final String getStringFromValue(MemberValuePair mp) {
