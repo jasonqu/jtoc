@@ -17,14 +17,10 @@
 
 package org.jtoc.convertor.cpunit;
 
-import japa.parser.ast.CompilationUnit;
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.NormalAnnotationExpr;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
 
-import java.io.FileInputStream;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -39,13 +35,6 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 
 	private static Log logger = LogFactory.getLog(InnerTestAnnotation.class);
 
-	/**
-	 * used for test
-	 */
-	public InnerTestAnnotation() {
-		this(null);
-	}
-	
 	/**
 	 * set the compilation unit and initial the local variables
 	 * 
@@ -92,17 +81,12 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 	 * the method to determine whether the input annotation expr is an Instance
 	 * of InnerTestAnnotation
 	 * 
-	 * @param content
-	 *            annotation expr
+	 * @param annotation
+	 *            the annotation
 	 * @return true if it is an Instance of InnerTestAnnotation
 	 */
-	public static boolean isInstance(String content) {
-		return content != null
-				&& (content.equals("@InnerTest") || content.startsWith("@InnerTest("));
-	}
-	
-	protected boolean isInstanceLocal(String content) {
-		return InnerTestAnnotation.isInstance(content);
+	public static boolean isInstance(AnnotationExpr annotation) {
+		return annotation != null && annotation.getName().getName().equals("InnerTest");
 	}
 	
 	/**
@@ -115,12 +99,10 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 	public void parse() throws JtocFormatException {
 		String content = this.unit.toString();
 		
-		if (!this.isInstanceLocal(content))
-			return;
-		
 		logger.debug("Begin parse : "+content);
 		this.init();
 		
+		// default value XXX @InnerTest()
 		if (content.equals("@InnerTest"))
 			return;	
 		
@@ -128,7 +110,7 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 		if(unit instanceof NormalAnnotationExpr){
 			NormalAnnotationExpr nu = (NormalAnnotationExpr)unit;
 			List<MemberValuePair> list = nu.getPairs();
-			if (list == null)
+			if (list == null) // have to be kept for "@InnerTest()"
 				return;
 			
 			for(MemberValuePair mp : list){
@@ -158,7 +140,7 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 	 */
 	public static InnerTestAnnotation getInnerTestAnnotationFromAnnoExpr(
 			AnnotationExpr ae) throws JtocFormatException {
-		if(!isInstance(ae.toString()))
+		if(!isInstance(ae))
 			return null;
 		InnerTestAnnotation pa = new InnerTestAnnotation(ae);
 		pa.parse();
@@ -182,75 +164,29 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 		return states;
 	}
 	
-	/**
-	 * for test
+	/* (non-Javadoc)
+	 * @see org.jtoc.convertor.cpunit.JtocNode#toString()
 	 */
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder(128);
-		sb.append("classNames : ");
+		sb.append("@InnerTest(classNames = { ");
 		for(String s : classNames){
-			sb.append('(');
+			sb.append('"');
 			sb.append(s);
-			sb.append(')');
+			sb.append("\", ");
 		}
-		
-		sb.append(" objectNames : ");
+		sb.insert(sb.length() - 2, new char[] { ' ', '}' });
+
+		sb.append("objectNames = { ");
 		for(String s : objectNames){
-			sb.append('(');
+			sb.append('"');
 			sb.append(s);
-			sb.append(')');
+			sb.append("\", ");
 		}
+		sb.delete(sb.length() - 2, sb.length());
+		sb.append(" })");
 		return sb.toString();
 	}
 
-	/**
-	 * test class
-	 */
-	class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
-		public ClassDeclarationVisitor(){}
-		
-		@Override
-		public void visit(ClassOrInterfaceDeclaration n, Object arg) {
-			List<AnnotationExpr> list = n.getAnnotations();
-			if (list == null) // the method has no annotation.
-				return;
-			
-			try {
-				for (AnnotationExpr ae : list) {
-					if(InnerTestAnnotation.isInstance(ae.toString())){
-						InnerTestAnnotation i = new InnerTestAnnotation(ae);
-						i.parse();
-						System.out.println(i.toString());
-					}
-				}
-			} catch (JtocFormatException e) {
-				logger.error(e.getMessage());
-			}
-		}
-	}
-	
-	/**
-	 * test method
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception{
-		// creates an input stream for the file to be parsed
-		FileInputStream in = new FileInputStream(
-				"./test/org/jtoc/convertor/cpunit/InnerTestAnnoTest.java");
-
-		CompilationUnit cu;
-		try {
-			// parse the file
-			cu = japa.parser.JavaParser.parse(in);
-		} finally {
-			in.close();
-		}
-
-		InnerTestAnnotation ita = new InnerTestAnnotation();
-		// visit and print the methods names
-		JtocNode.setFilename("InnerTestAnnoTest.java");
-		ClassDeclarationVisitor visitor = ita.new ClassDeclarationVisitor();
-		visitor.visit(cu, null);
-	}
 }

@@ -8,9 +8,7 @@ import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,8 +30,10 @@ public class MethodVisitor extends VoidVisitorAdapter<Object> {
 	/** Arraylist for the PreAnnotation parse exception messages */
 	ArrayList<String> prelistmessages = new ArrayList<String>();
 
-	/** Set for the PreAnnotation indexes */
+	/** ArrayList for the PreAnnotation indexes */
 	ArrayList<Integer> preAnnoSet = new ArrayList<Integer>();
+	/** ArrayList for the PostAnnotation indexes */
+	ArrayList<Integer> postAnnoSet = new ArrayList<Integer>();
 
 	/** the annotation expression counter */
 	int index = 0;
@@ -61,6 +61,8 @@ public class MethodVisitor extends VoidVisitorAdapter<Object> {
 					preAnnoSet.add(index);
 				}
 			}
+			if (PostAnnotation.isInstance(ae)) 
+				postAnnoSet.add(index);
 			annolist.add(ae);
 			index++;
 		}

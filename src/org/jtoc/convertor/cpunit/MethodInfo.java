@@ -36,13 +36,6 @@ public class MethodInfo extends JtocNode<MethodDeclaration> {
 	private static Log logger = LogFactory.getLog(InnerTestAnnotation.class);
 
 	/**
-	 * used for test
-	 */
-	public MethodInfo() {
-		this(null);
-	}
-
-	/**
 	 * set the compilation unit and initial the local variables
 	 * 
 	 * @param md

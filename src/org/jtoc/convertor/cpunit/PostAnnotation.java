@@ -27,14 +27,6 @@ import japa.parser.ast.expr.AnnotationExpr;
 public class PostAnnotation extends JtocAnnotation {
 
 	/**
-	 * used for test
-	 * XXX need to be deleted
-	 */
-	public PostAnnotation() {
-		this(null);
-	}
-	
-	/**
 	 * set the compilation unit and initial the local variables
 	 * 
 	 * @param ae
@@ -46,18 +38,6 @@ public class PostAnnotation extends JtocAnnotation {
 	}
 
 	/**
-	 * the method to determine whether the input annotation expr is an Instance
-	 * 
-	 * @param content
-	 *            annotation expr
-	 * @return
-	 */
-//	public static boolean isInstance(String content) {
-//		return content != null
-//				&& (content.equals("@Post") || content.startsWith("@Post("));
-//	}
-	
-	/**
 	 * to determine whether the input expression is an Instance of PostAnnotation
 	 * 
 	 * @param annotation
@@ -66,11 +46,6 @@ public class PostAnnotation extends JtocAnnotation {
 	 */
 	public static boolean isInstance(AnnotationExpr annotation) {
 		return annotation != null && annotation.getName().getName().equals("Post");
-	}
-	
-	@Override
-	protected boolean isInstanceLocal(String content) {
-		return false;
 	}
 	
 	/**

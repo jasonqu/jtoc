@@ -3,14 +3,13 @@
  */
 package org.jtoc.convertor.cpunit;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.expr.AnnotationExpr;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -32,6 +31,9 @@ public class PreAnnotationTest {
 	
 	/** ArrayList for the PreAnnotation indexes */
 	static ArrayList<Integer> preindexes = new ArrayList<Integer>();
+	
+	/** the lineNumber where wrong format Annotation begins */
+	int wrongFormatLine = 17;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -58,7 +60,7 @@ public class PreAnnotationTest {
 		prelist = visitor.prelist;
 		prelistmessages = visitor.prelistmessages;
 		
-		int[] indexes = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16 };
+		int[] indexes = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 };
 		for (int i : indexes)
 			preindexes.add(i);
 	}
@@ -111,9 +113,9 @@ public class PreAnnotationTest {
 	@Test
 	public void testGetPreAnnotationFromAnnoExpr() throws JtocException {
 		for (int i = 0; i < annolist.size(); i++) {
-			if (i == 16)
+			if (i > wrongFormatLine)
 				continue;
-			if (PreAnnotation.isInstance(annolist.get(i)))
+			if (preindexes.contains(i))
 				assertNotNull("the bug index is " + i, PreAnnotation
 						.getPreAnnotationFromAnnoExpr(annolist.get(i)));
 			else
@@ -137,7 +139,7 @@ public class PreAnnotationTest {
 	@Test
 	public void testInit() throws JtocException {
 		for (int i = 0; i < annolist.size(); i++) {
-			if (i == 16)
+			if (i > wrongFormatLine)
 				continue;
 			if (PreAnnotation.isInstance(annolist.get(i))){
 				PreAnnotation pa = PreAnnotation
@@ -157,7 +159,7 @@ public class PreAnnotationTest {
 	@Test
 	public void testGetHead() throws JtocException {
 		for (int i = 0; i < annolist.size(); i++) {
-			if (i == 16)
+			if (i > wrongFormatLine)
 				continue;
 			if (PreAnnotation.isInstance(annolist.get(i)))
 				assertEquals("the bug index is " + i, "@Pre", PreAnnotation
@@ -168,19 +170,23 @@ public class PreAnnotationTest {
 
 	/**
 	 * Test method for {@link org.jtoc.convertor.cpunit.JtocAnnotation#parse()}.
+	 * For the JtocFormatException occurrence
 	 */
 	@Test
 	public void testParse() {
 		for (int i = 0; i < annolist.size(); i++) {
-			if (PreAnnotation.isInstance(annolist.get(i))){
-				PreAnnotation pa;
+			if (PreAnnotation.isInstance(annolist.get(i))) {
 				try {
-					pa = PreAnnotation
-							.getPreAnnotationFromAnnoExpr(annolist.get(i));
+					PreAnnotation.getPreAnnotationFromAnnoExpr(annolist.get(i));
+					if (i > wrongFormatLine)
+						fail("This annotation should throw a JtocFormatException"
+								+ annolist.get(i));
 				} catch (JtocFormatException e) {
-					assertTrue("", e.getMessage().startsWith("(PrePostAnnoTest.java:"));
+					assertTrue("", i > wrongFormatLine);
+					assertTrue("", e.getMessage().startsWith(
+							"(PrePostAnnoTest.java:"));
 				}
-			}					
+			}
 		}
 	}
 
