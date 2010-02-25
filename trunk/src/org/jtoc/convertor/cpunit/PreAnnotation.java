@@ -27,14 +27,6 @@ import japa.parser.ast.expr.AnnotationExpr;
 public class PreAnnotation extends JtocAnnotation {
 
 	/**
-	 * used for test
-	 *  XXX need to be deleted
-	 */
-	public PreAnnotation() {
-		this(null);
-	}
-
-	/**
 	 * set the compilation unit and initial the local variables
 	 * 
 	 * @param ae
@@ -54,15 +46,6 @@ public class PreAnnotation extends JtocAnnotation {
 	 */
 	public static boolean isInstance(AnnotationExpr annotation) {
 		return annotation != null && annotation.getName().getName().equals("Pre");
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtoc.convertor.cpunit.JtocAnnotation#isInstanceLocal(java.lang.String)
-	 */
-	// XXX seems to be useless
-	@Override
-	protected boolean isInstanceLocal(String content) {
-		return false;
 	}
 
 	/**

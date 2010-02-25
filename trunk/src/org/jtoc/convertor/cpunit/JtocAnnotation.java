@@ -36,14 +36,6 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 	private static Log logger = LogFactory.getLog(JtocAnnotation.class);
 
 	/**
-	 * used for test
-	 * XXX need to be deleted
-	 */
-	public JtocAnnotation() {
-		this(null);
-	}
-	
-	/**
 	 * set the compilation unit and initial the local variables
 	 * 
 	 * @param ae
@@ -153,19 +145,9 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 	}
 
 	/**
-	 * XXX seems to useless
-	 * to determine whether the input expression is an Instance of
-	 * JtocAnnotation
-	 * 
-	 * @param content
-	 *            annotation expr
-	 * @return true if the expression is an Instance of JtocAnnotation
-	 */
-	protected abstract boolean isInstanceLocal(String content);
-
-	/**
 	 * parse a given annotation expression and set the local variables with the
 	 * specified values.
+	 * p.a. must be sure that the compile unit is with the right type.
 	 * 
 	 * @throws JtocFormatException
 	 */
@@ -173,9 +155,6 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 	public void parse() throws JtocFormatException {
 		// XXX need refactor
 		String content = this.unit.toString();
-		
-		// XXX proved to be useless
-		// if (!this.isInstanceLocal(content)) return;
 		
 		logger.debug("Begin parse : "+content);
 		this.init();
@@ -187,8 +166,7 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 		logger.debug(this.unit.getClass().toString());
 		if(unit instanceof NormalAnnotationExpr){
 			List<MemberValuePair> list = ((NormalAnnotationExpr)unit).getPairs();
-			// XXX might could be deleted
-			if (list == null)
+			if (list == null)// have to be kept for "@Post()" or "@Pre()"
 				return;
 			
 			for(MemberValuePair mp : list){
@@ -206,6 +184,9 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.jtoc.convertor.cpunit.JtocNode#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(128);

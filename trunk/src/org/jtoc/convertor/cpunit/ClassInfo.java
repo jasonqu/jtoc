@@ -187,7 +187,7 @@ public class ClassInfo extends JtocNode<ClassOrInterfaceDeclaration> {
 			return null;
 		
 		for(AnnotationExpr ae : list)
-			if(InnerTestAnnotation.isInstance(ae.toString()))
+			if(InnerTestAnnotation.isInstance(ae))
 				return InnerTestAnnotation.getInnerTestAnnotationFromAnnoExpr(ae);
 		return null;
 	}
