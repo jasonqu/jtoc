@@ -10,17 +10,12 @@ import japa.parser.ast.visitor.VoidVisitorAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * used for test
  * 
  * @author Goddamned Qu
  */
 public class MethodVisitor extends VoidVisitorAdapter<Object> {
-
-	private static Log logger = LogFactory.getLog(MethodVisitor.class);
 
 	/** Arraylist for the AnnotationExpr */
 	ArrayList<AnnotationExpr> annolist = new ArrayList<AnnotationExpr>();
@@ -38,31 +33,46 @@ public class MethodVisitor extends VoidVisitorAdapter<Object> {
 	/** the annotation expression counter */
 	int index = 0;
 	
+	/** Arraylist for the MethodInfo */
+	ArrayList<MethodInfo> methodlist = new ArrayList<MethodInfo>();
+	
+	/** Arraylist for the PostAnnotation */
+	ArrayList<PostAnnotation> postlist = new ArrayList<PostAnnotation>();
+	/** Arraylist for the PostAnnotation parse exception messages */
+	ArrayList<String> postlistmessages = new ArrayList<String>();
+	
 	/**
 	 * add the JtocAnnotations and related error messages into the list
 	 */
 	@Override
-	public void visit(MethodDeclaration n, Object arg) {
-		List<AnnotationExpr> list = n.getAnnotations();
+	public void visit(MethodDeclaration md, Object arg) {
+		try {
+			methodlist.add(MethodInfo.getMethodInfoFromMethodDecl(md));
+		} catch (JtocFormatException e1) {
+			// do nothing here
+		}
+		
+		List<AnnotationExpr> list = md.getAnnotations();
 		if (list == null) // the method has no annotation.
 			return;
 
 		for (AnnotationExpr ae : list) {
 			if (PreAnnotation.isInstance(ae)) {
+				preAnnoSet.add(index);
 				try {
-					PreAnnotation anno = new PreAnnotation(ae);
-					anno.parse();
-					prelist.add(anno);
-					logger.info(anno.toString());
+					prelist.add(PreAnnotation.getPreAnnotationFromAnnoExpr(ae));
 				} catch (JtocFormatException e) {
-					logger.error(e.getMessage());
 					prelistmessages.add(e.getMessage());
-				} finally {
-					preAnnoSet.add(index);
+				}
+			} else if (PostAnnotation.isInstance(ae)) {
+				postAnnoSet.add(index);
+				try {
+					postlist.add(PostAnnotation
+							.getPostAnnotationFromAnnoExpr(ae));
+				} catch (JtocFormatException e) {
+					postlistmessages.add(e.getMessage());
 				}
 			}
-			if (PostAnnotation.isInstance(ae)) 
-				postAnnoSet.add(index);
 			annolist.add(ae);
 			index++;
 		}

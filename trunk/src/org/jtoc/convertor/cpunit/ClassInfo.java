@@ -155,6 +155,7 @@ public class ClassInfo extends JtocNode<ClassOrInterfaceDeclaration> {
 	 * @throws JtocException
 	 *             if violate any constraint
 	 */
+	@SuppressWarnings("static-access")
 	private void validate() throws JtocException {
 		if(ita == null && !this.getMethodInfos().isEmpty())
 			throw new JtocException("The class has no InnerTest Annotation",

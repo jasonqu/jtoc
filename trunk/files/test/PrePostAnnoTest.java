@@ -1,61 +1,59 @@
 package org.jtoc.convertor.cpunit;
 
-import org.jtoc.Post;
-import org.jtoc.Pre;
-
 public class PrePostAnnoTest {
 	
-	public void method() {
-	}
+	public void method0() { }
 
 	@Pre
 	@Post
-	public void method0() {
-	}
-	
-	@Pre()
-	@Post()
 	public void method1() {
 	}
+	
+	@Post() @Pre()
+	public int method2() {
+	}
 
-	@Pre(testObject = "innerTest")
-	@Post(testObject = "innerTest")
-	public void method0(String name) {
+	@Post(testObject = "test")
+	@Pre(testObject = "test")
+	public int method3(String para1) {
 	}
 
 	@Pre(testMethod = "commenPreCheck")
+	public Object method4(String para1) {
+	}
+	
 	@Post(testMethod = "commenPostCheck")
-	public void method0(String name) {
+	public Object method5(String para1) {
 	}
 	
 	@Pre(parameters = "para1, paraK")
 	@Post(parameters = "para1, paraK")
-	public void method0(String name) {
+	public Object method6(String para1, int paraK, double paraN) {
 	}
 	
-	@Pre(testObject = "innerTest", testMethod = "commenPreCheck")
-	@Post(testObject = "innerTest", testMethod = "commenPostCheck")
-	public void method0(String name) {
+	@Pre(testObject = "test", testMethod = "commenPreCheck")
+	@Post(testObject = "test", testMethod = "commenPostCheck")
+	public double method7(String para1, int paraK, double paraN) {
 	}
 	
-	@Pre(testObject = "innerTest", parameters = "para1, paraK")
-	@Post(testObject = "innerTest", parameters = "para1, paraK")
-	public void method0(String name) {
+	@Pre(testObject = "test", parameters = "para1, paraK")
+	@Post(testObject = "test", parameters = "para1, paraK")
+	public double method8(String para1, int paraK, double paraN) {
 	}
 	
 	@Pre(testMethod = "commenPreCheck", parameters = "para1, paraK")
 	@Post(testMethod = "commenPostCheck", parameters = "para1, paraK")
-	public void method0(String name) {
+	public Integer method9(String para1, int paraK, double paraN) {
 	}
 	
-	@Pre(testObject = "innerTest", testMethod = "commenPreCheck", parameters = "para1, paraK")
-	@Post(testObject = "innerTest", testMethod = "commenPostCheck", parameters = "para1, paraK")
-	public void method0(String name) {
+	@Pre(testObject = "test", testMethod = "commenPreCheck", parameters = "para1, paraK")
+	@Post(testObject = "test", testMethod = "commenPostCheck", parameters = "para1, paraK")
+	public Integer method10(String para1, int paraK, double paraN) {
 	}
 	
 	// the annotation below would cause JtocFormatException
-	@Pre(testObject1 = "innerTest", testMethod = "commenPreCheck", parameters = "para1, paraK")
-	@Post(testObject1 = "innerTest", testMethod = "commenPostCheck", parameters = "para1, paraK")
-	public void method0(String name) {
+	@Pre(testObject = {"test"}, testMethod = "commenPreCheck", parameters = "para1, paraK")
+	@Post(testObject1 = "test", testMethod = "commenPostCheck", parameters = "para1, paraK")
+	public Integer method11(String para1, int paraK, double paraN) {
 	}
 }

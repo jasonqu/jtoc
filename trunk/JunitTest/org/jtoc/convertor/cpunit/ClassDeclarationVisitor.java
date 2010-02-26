@@ -24,7 +24,10 @@ public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 
 	/** ArrayList for the PostAnnotation indexes */
 	ArrayList<Integer> innerAnnoSet = new ArrayList<Integer>();
-	
+
+	/** ArrayList for the InnerTestAnnotation */
+	ArrayList<InnerTestAnnotation> innerAnnoList = new ArrayList<InnerTestAnnotation>();
+
 	/** the annotation expression counter */
 	int index = 0;
 	
@@ -37,9 +40,10 @@ public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 		for (AnnotationExpr ae : list) {
 			if (InnerTestAnnotation.isInstance(ae)) {
 				try {
-					InnerTestAnnotation i = new InnerTestAnnotation(ae);
-					i.parse();
-					logger.info(i.toString());
+					InnerTestAnnotation ita = new InnerTestAnnotation(ae);
+					ita.parse();
+					innerAnnoList.add(ita);
+					logger.info(ita.toString());
 				} catch (JtocFormatException e) {
 					logger.error(e.getMessage());
 				}
