@@ -21,8 +21,6 @@ import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.NormalAnnotationExpr;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -160,16 +158,12 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 		this.init();
 		
 		// default value
-		if (content.equals(this.getHead()))
+		if (content.equals(this.getHead())
+				|| content.equals(this.getHead() + "()"))
 			return;
-		
-		logger.debug(this.unit.getClass().toString());
+
 		if(unit instanceof NormalAnnotationExpr){
-			List<MemberValuePair> list = ((NormalAnnotationExpr)unit).getPairs();
-			if (list == null)// have to be kept for "@Post()" or "@Pre()"
-				return;
-			
-			for(MemberValuePair mp : list){
+			for(MemberValuePair mp : ((NormalAnnotationExpr)unit).getPairs()){
 				if(mp.getName().equals("testObject")){
 					this.setTestObject(this.getStringFromValue(mp));
 				} else if (mp.getName().equals("testMethod")) {

@@ -3,16 +3,15 @@
  */
 package org.jtoc.convertor.cpunit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.MemberValuePair;
+import japa.parser.ast.expr.NormalAnnotationExpr;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.*;
 
@@ -30,6 +29,9 @@ public class InnerTestAnnotationTest {
 
 	/** the lineNumber where wrong format Annotation begins */
 	int wrongFormatLine = 5;
+	
+	/** the index used in testGetStringFromValue */
+	int fullparaindex = 7;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -54,7 +56,7 @@ public class InnerTestAnnotationTest {
 		
 		annolist = visitor.annolist;
 		
-		int[] indexes = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
+		int[] indexes = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 		for (int i : indexes)
 			innerindexes.add(i);
 	}
@@ -166,28 +168,56 @@ public class InnerTestAnnotationTest {
 
 	/**
 	 * Test method for {@link org.jtoc.convertor.cpunit.InnerTestAnnotation#getStatements()}.
+	 * @throws JtocFormatException 
 	 */
 	@Test
-	public void testGetStatements() {
-		fail("Not yet implemented");
+	public void testGetStatements() throws JtocFormatException {
+		String[][] states = new String[][] {
+				new String[] { "InnerTest innerTest = new InnerTest();" },
+				new String[] { "InnerTest innerTest = new InnerTest();" },
+				new String[] { "InnerTest1 innerTest = new InnerTest1();" },
+				new String[] { "InnerTest test1 = new InnerTest();" },
+				new String[] { "InnerTest1 test1 = new InnerTest1();" },
+				new String[] { "InnerTest1 test1 = new InnerTest1();",
+						"InnerTest2 test2 = new InnerTest2();" } };
+		for (int i = 0, j = 0; i < annolist.size(); i++) {
+			if (i > wrongFormatLine)
+				return;
+			if (innerindexes.contains(i)) {
+				InnerTestAnnotation ita = InnerTestAnnotation
+						.getInnerTestAnnotationFromAnnoExpr(annolist.get(i));
+				assertArrayEquals(states[j], ita.getStatements());
+				j++;
+			}
+		}
 	}
 
 	/**
 	 * Test method for {@link org.jtoc.convertor.cpunit.JtocNode#getStringArrayFromValue(japa.parser.ast.expr.MemberValuePair)}.
+	 * @throws JtocFormatException 
 	 */
 	@Test
-	public void testGetStringArrayFromValue() {
-		fail("Not yet implemented");
+	public void testGetStringArrayFromValue() throws JtocFormatException {
+		List<MemberValuePair> mps = ((NormalAnnotationExpr) annolist
+				.get(fullparaindex)).getPairs();
+		assertEquals(3, mps.size());
+		String[] t = JtocNode.getStringArrayFromValue(mps.get(0));
+		assertEquals(2, t.length);
+		assertEquals("InnerTest1", t[0]);
+		assertEquals("InnerTest2", t[1]);
+
+		t = JtocNode.getStringArrayFromValue(mps.get(1));
+		assertEquals(1, t.length);
+		assertEquals("test2", t[0]);
+
+		try {
+			JtocNode.getStringArrayFromValue(mps.get(2));
+			fail("This line should not be reached.");
+		} catch (JtocFormatException e) {
+			assertTrue("", e.getMessage().startsWith("(InnerTestAnnoTest.java:"));
+		}
 	}
 
-	/**
-	 * Test method for {@link org.jtoc.convertor.cpunit.JtocNode#getStringFromValue(japa.parser.ast.expr.MemberValuePair)}.
-	 */
-	@Test
-	public void testGetStringFromValue() {
-		fail("Not yet implemented");
-	}
-	
 	/**
 	 * test method
 	 * @param args
@@ -212,6 +242,13 @@ public class InnerTestAnnotationTest {
 		System.out.println("The index array for testIsInstance :");
 		for(Integer i : visitor.innerAnnoSet)
 			System.out.print(i+" ");
+		System.out.println();
+
+		System.out.println();
+		System.out.println("The code generated :");
+		for (InnerTestAnnotation i : visitor.innerAnnoList)
+			for (String s : i.getStatements())
+				System.out.println(s);
 		System.out.println();
 	}
 }

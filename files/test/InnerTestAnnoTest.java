@@ -32,6 +32,11 @@ class InnerTestAnnoWith2MultiParas {
 class InnerTestAnnoWith2MultiParasWithDifferentNums {
 }
 
+@InnerTest(classNames = { "InnerTest1", "InnerTest2" }, 
+		objectNames = "test2", wrong = this)
+class InnerTestAnnoWith2MultiParasWithDifferentType {
+}
+
 @InnerTest(classNames = { "InnerTest1", "InnerTest2" })
 class InnerTestAnnoWith1MultiParas {
 }

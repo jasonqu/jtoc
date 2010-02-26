@@ -89,14 +89,15 @@ public abstract class JtocNode<C extends Node> {
 	 * @param mp
 	 *            the input compiled unit
 	 * @return value of the param pair; null if it is not a String Array
+	 * @throws JtocFormatException 
 	 */
-	protected final String[] getStringArrayFromValue(MemberValuePair mp) {
+	protected static String[] getStringArrayFromValue(MemberValuePair mp) throws JtocFormatException {
 		if (mp.getValue() instanceof StringLiteralExpr) // array with one value
 			return new String[] { ((StringLiteralExpr) mp.getValue())
 					.getValue() };
 
 		if (!(mp.getValue() instanceof ArrayInitializerExpr)) // should not happen
-			return null;
+			throw new JtocFormatException(mp.toString(), getFilename(), mp.getBeginLine());
 
 		// deal with the Array Initializer Expression
 		StringLiteralExpr[] t = (StringLiteralExpr[]) ((ArrayInitializerExpr) mp
@@ -115,11 +116,12 @@ public abstract class JtocNode<C extends Node> {
 	 * @param mp
 	 *            the input compiled unit
 	 * @return value of the param pair; null if it is not a String
+	 * @throws JtocFormatException 
 	 */
-	protected final String getStringFromValue(MemberValuePair mp) {
+	protected static String getStringFromValue(MemberValuePair mp) throws JtocFormatException {
 		if (mp.getValue() instanceof StringLiteralExpr)
 			return ((StringLiteralExpr) mp.getValue()).getValue();
-		return null;
+		throw new JtocFormatException(mp.toString(), getFilename(), mp.getBeginLine());
 	}
 
 	/**

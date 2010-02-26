@@ -21,8 +21,6 @@ import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.NormalAnnotationExpr;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -101,19 +99,13 @@ public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 		
 		logger.debug("Begin parse : "+content);
 		this.init();
-		
-		// default value XXX @InnerTest()
-		if (content.equals("@InnerTest"))
-			return;	
-		
+
+		if (content.equals("@InnerTest") || content.equals("@InnerTest()"))
+			return;
+
 		logger.debug(this.unit.getClass().toString());
 		if(unit instanceof NormalAnnotationExpr){
-			NormalAnnotationExpr nu = (NormalAnnotationExpr)unit;
-			List<MemberValuePair> list = nu.getPairs();
-			if (list == null) // have to be kept for "@InnerTest()"
-				return;
-			
-			for(MemberValuePair mp : list){
+			for(MemberValuePair mp : ((NormalAnnotationExpr)unit).getPairs()){
 				if(mp.getName().equals("classNames")){
 					this.classNames = this.getStringArrayFromValue(mp);
 				} else if (mp.getName().equals("objectNames")) {

@@ -20,12 +20,18 @@ public class PostAnnotationTest {
 
 	/**	Arraylist for the AnnotationExpr */
 	static ArrayList<AnnotationExpr> annolist = new ArrayList<AnnotationExpr>();
+	
+	/** Arraylist for the PostAnnotation */
+	static ArrayList<PostAnnotation> postlist = new ArrayList<PostAnnotation>();
 
 	/** ArrayList for the PreAnnotation indexes */
 	static ArrayList<Integer> postindexes = new ArrayList<Integer>();
 	
 	/** the lineNumber where wrong format Annotation begins */
 	int wrongFormatLine = 18;
+	
+	/** Arraylist for the MethodInfo */
+	static ArrayList<MethodInfo> methodlist = new ArrayList<MethodInfo>();
 	
 	/**
 	 * @throws java.lang.Exception
@@ -49,8 +55,10 @@ public class PostAnnotationTest {
 		visitor.visit(cu, null);
 		
 		annolist = visitor.annolist;
+		postlist = visitor.postlist;
+		methodlist = visitor.methodlist;
 
-		int[] indexes = new int[] { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
+		int[] indexes = new int[] { 1, 2, 4, 7, 9, 11, 13, 15, 17, 19 };
 		for (int i : indexes)
 			postindexes.add(i);
 	}
@@ -122,31 +130,77 @@ public class PostAnnotationTest {
 	 */
 	@Test
 	public void testNeedGenerateParas() {
-		fail("Not yet implemented");
+		for (int i = 0; i < postlist.size(); i++)
+			assertEquals("error at " + i, postlist.get(i).getParameters().isEmpty(),
+					postlist.get(i).needGenerateParas());
 	}
 
 	/**
 	 * Test method for {@link org.jtoc.convertor.cpunit.PostAnnotation#getStatementDecl(org.jtoc.convertor.cpunit.MethodInfo)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testGetStatementDecl() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link org.jtoc.convertor.cpunit.PostAnnotation#getStatementParas(org.jtoc.convertor.cpunit.MethodInfo)}.
-	 */
-	@Test
-	public void testGetStatementParas() {
-		fail("Not yet implemented");
+	public void testGetStatementDeclAndGetStatementParas() throws Exception {
+		// must parse again because objects in Annotation array are changed
+		setUpBeforeClass();
+		
+		String[] statedecls = new String[]{
+				"innerTest.method1PostCheck(",
+				"innerTest.method2PostCheck(",
+				"test.method3PostCheck(",
+				"innerTest.commenPostCheck(",
+				"innerTest.method6PostCheck(para1, paraK);",
+				"test.commenPostCheck(",
+				"test.method8PostCheck(para1, paraK);",
+				"innerTest.commenPostCheck(para1, paraK);",
+				"test.commenPostCheck(para1, paraK);"
+		};
+		
+		String[] stateparas = new String[] { ");", ");", ", para1);",
+				", para1);", "", ", para1, paraK, paraN);", "", "", "", };
+		
+		int id = 0;
+		for (int i = 0; i < 3; i++){
+			assertEquals(statedecls[id], postlist.get(i).getStatementDecl(
+					methodlist.get(i + 1)));
+			assertEquals(stateparas[id], postlist.get(i).getStatementParas(
+					methodlist.get(i + 1)));
+			id++;
+		}
+		for (int i = 3; i < postlist.size(); i++){
+			assertEquals(statedecls[id], postlist.get(i).getStatementDecl(
+					methodlist.get(i + 2)));
+			assertEquals(stateparas[id], postlist.get(i).getStatementParas(
+					methodlist.get(i + 1)));
+			id++;
+		}
 	}
 
 	/**
 	 * Test method for {@link org.jtoc.convertor.cpunit.PostAnnotation#getStatement(org.jtoc.convertor.cpunit.MethodInfo)}.
+	 * Pay attention that "the methodInfo's returnType should be void" isn't programmed as a constraint.
 	 */
 	@Test
 	public void testGetStatement() {
-		fail("Not yet implemented");
+		String[] states = new String[]{
+				"innerTest.method1PostCheck();",
+				"innerTest.method2PostCheck();",
+				"test.method3PostCheck(para1);",
+				"innerTest.commenPostCheck(para1);",
+				"innerTest.method6PostCheck(para1, paraK);",
+				"test.commenPostCheck(para1, paraK, paraN);",
+				"test.method8PostCheck(para1, paraK);",
+				"innerTest.commenPostCheck(para1, paraK);",
+				"test.commenPostCheck(para1, paraK);"
+		};
+		
+		int id = 0;
+		for (int i = 0; i < 3; i++)
+			assertEquals(states[id++], postlist.get(i).getStatement(
+					methodlist.get(i + 1)));
+		for (int i = 3; i < postlist.size(); i++)
+			assertEquals(states[id++], postlist.get(i).getStatement(
+					methodlist.get(i + 2)));
 	}
 
 	/**
@@ -207,22 +261,6 @@ public class PostAnnotationTest {
 	}
 
 	/**
-	 * Test method for {@link org.jtoc.convertor.cpunit.JtocNode#getStringArrayFromValue(japa.parser.ast.expr.MemberValuePair)}.
-	 */
-	@Test
-	public void testGetStringArrayFromValue() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link org.jtoc.convertor.cpunit.JtocNode#getStringFromValue(japa.parser.ast.expr.MemberValuePair)}.
-	 */
-	@Test
-	public void testGetStringFromValue() {
-		fail("Not yet implemented");
-	}
-
-	/**
 	 * test method
 	 * @param args
 	 */
@@ -247,6 +285,41 @@ public class PostAnnotationTest {
 		System.out.println("The index array for testIsInstance :");
 		for(Integer i : visitor.postAnnoSet)
 			System.out.print(i+" ");
+		System.out.println();
+		
+		System.out.println("The needGenerateParas for testNeedGenerateParas :");
+		for(PostAnnotation pa : visitor.postlist){
+			System.out.println(pa);
+			System.out.println(pa.needGenerateParas());
+		}
+		
+		System.out.println("The statements testGetStatement :");
+		for (int i = 0; i < 3; i++)
+			System.out.println(visitor.postlist.get(i).getStatement(
+					visitor.methodlist.get(i + 1)));
+		for (int i = 3; i < visitor.postlist.size(); i++)
+			System.out.println(visitor.postlist.get(i).getStatement(
+					visitor.methodlist.get(i + 2)));
+		System.out.println();
+
+		// must parse again because objects in Annotation array are changed
+		setUpBeforeClass();
+		System.out.println("The statements getStatementDecl :");
+		for (int i = 0; i < 3; i++)
+			System.out.println(postlist.get(i).getStatementDecl(
+					methodlist.get(i + 1)));
+		for (int i = 3; i < postlist.size(); i++)
+			System.out.println(postlist.get(i).getStatementDecl(
+					methodlist.get(i + 2)));
+		System.out.println();
+		
+		System.out.println("The statements getStatementParas :");
+		for (int i = 0; i < 3; i++)
+			System.out.println(postlist.get(i).getStatementParas(
+					methodlist.get(i + 1)));
+		for (int i = 3; i < postlist.size(); i++)
+			System.out.println(postlist.get(i).getStatementParas(
+					methodlist.get(i + 2)));
 		System.out.println();
 	}
 }

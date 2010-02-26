@@ -15,14 +15,14 @@ public class SmallPerson {
 	{
 		inner.addKgsPreCheck(kgs);
 		weight += kgs; 
-		innerTest.addKgsPostCheck();
+		innerTest.addKgsPostCheck(kgs);
 	}
 	
 	@Deprecated
 	public void setName(String name){
 		innerTest.setNamePreCheck(name);
 		if(name == null) 
-		{innerTest.setNamePostCheck(); return;}
+		{innerTest.setNamePostCheck(name); return;}
 		if(name == ""){
 			{innerTest.setNamePostCheck(name); return;}
 		}

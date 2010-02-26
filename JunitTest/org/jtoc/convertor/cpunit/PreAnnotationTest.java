@@ -7,9 +7,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.MemberValuePair;
+import japa.parser.ast.expr.NormalAnnotationExpr;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.*;
 import static org.junit.Assert.*;
@@ -32,8 +35,15 @@ public class PreAnnotationTest {
 	/** ArrayList for the PreAnnotation indexes */
 	static ArrayList<Integer> preindexes = new ArrayList<Integer>();
 	
-	/** the lineNumber where wrong format Annotation begins */
+	/** the index where wrong format Annotation begins */
 	int wrongFormatLine = 17;
+	
+	/** the index used in testGetStringFromValue */
+	int fullparaindex = 16;
+	int arrayindex = 18;
+	
+	/** Arraylist for the MethodInfo */
+	static ArrayList<MethodInfo> methodlist = new ArrayList<MethodInfo>();
 	
 	/**
 	 * @throws java.lang.Exception
@@ -58,9 +68,11 @@ public class PreAnnotationTest {
 		
 		annolist = visitor.annolist;
 		prelist = visitor.prelist;
+		assertEquals(9, prelist.size());
 		prelistmessages = visitor.prelistmessages;
+		methodlist = visitor.methodlist;
 		
-		int[] indexes = new int[] { 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 };
+		int[] indexes = new int[] { 0, 3, 5, 6, 8, 10, 12, 14, 16, 18 };
 		for (int i : indexes)
 			preindexes.add(i);
 	}
@@ -129,7 +141,25 @@ public class PreAnnotationTest {
 	 */
 	@Test
 	public void testGetStatement() {
-		fail("Not yet implemented");
+		String[] states = new String[]{
+				"innerTest.method1PreCheck();",
+				"innerTest.method2PreCheck();",
+				"test.method3PreCheck(para1);",
+				"innerTest.commenPreCheck(para1);",
+				"innerTest.method6PreCheck(para1, paraK);",
+				"test.commenPreCheck(para1, paraK, paraN);",
+				"test.method8PreCheck(para1, paraK);",
+				"innerTest.commenPreCheck(para1, paraK);",
+				"test.commenPreCheck(para1, paraK);"
+		};
+		
+		int id = 0;
+		for (int i = 0; i < 4; i++)
+			assertEquals(states[id++], prelist.get(i).getStatement(
+					methodlist.get(i + 1)));
+		for (int i = 4; i < prelist.size(); i++)
+			assertEquals(states[id++], prelist.get(i).getStatement(
+					methodlist.get(i + 2)));
 	}
 
 	/**
@@ -191,21 +221,27 @@ public class PreAnnotationTest {
 	}
 
 	/**
-	 * Test method for {@link org.jtoc.convertor.cpunit.JtocNode#getStringArrayFromValue(japa.parser.ast.expr.MemberValuePair)}.
+	 * Test method for {@link org.jtoc.convertor.cpunit.JtocNode#getStringFromValue(japa.parser.ast.expr.MemberValuePair)}.
+	 * @throws JtocFormatException 
 	 */
 	@Test
-	public void testGetStringArrayFromValue() {
-		fail("Not yet implemented");
+	public void testGetStringFromValue() throws JtocFormatException {
+		List<MemberValuePair> mp = ((NormalAnnotationExpr) annolist
+				.get(fullparaindex)).getPairs();
+		assertEquals(3, mp.size());
+		assertEquals("test", JtocNode.getStringFromValue(mp.get(0)));
+		assertEquals("commenPreCheck", JtocNode.getStringFromValue(mp.get(1)));
+		assertEquals("para1, paraK", JtocNode.getStringFromValue(mp.get(2)));
+
+		try {
+			JtocNode.getStringFromValue(((NormalAnnotationExpr) annolist
+					.get(arrayindex)).getPairs().get(0));
+			fail("This line should not be reached.");
+		} catch (JtocFormatException e) {
+			assertTrue("", e.getMessage().startsWith("(PrePostAnnoTest.java:"));
+		}
 	}
 
-	/**
-	 * Test method for {@link org.jtoc.convertor.cpunit.JtocNode#getStringFromValue(japa.parser.ast.expr.MemberValuePair)}.
-	 */
-	@Test
-	public void testGetStringFromValue() {
-		fail("Not yet implemented");
-	}
-	
 	/**
 	 * test method
 	 * @param args
@@ -230,6 +266,15 @@ public class PreAnnotationTest {
 		System.out.println("The index array for testIsInstance :");
 		for(Integer i : visitor.preAnnoSet)
 			System.out.print(i+" ");
+		System.out.println();
+		
+		System.out.println("The statements testGetStatement :");
+		for (int i = 0; i < 4; i++)
+			System.out.println(visitor.prelist.get(i).getStatement(
+					visitor.methodlist.get(i + 1)));
+		for (int i = 4; i < visitor.prelist.size(); i++)
+			System.out.println(visitor.prelist.get(i).getStatement(
+					visitor.methodlist.get(i + 2)));
 		System.out.println();
 	}
 

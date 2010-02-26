@@ -138,8 +138,7 @@ public class PostAnnotation extends JtocAnnotation {
 		sb.append('(');
 		if (this.needGenerateParas())
 			this.setParameters(methodInfo.getParaList());
-		else
-			sb.append(this.getParameters());
+		sb.append(this.getParameters());
 		sb.append(");");
 		return sb.toString();
 	}

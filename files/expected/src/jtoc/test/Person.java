@@ -30,7 +30,7 @@ public class Person {
 		//innerTester.addKgsPreCheck(kgs);
 		weight += kgs;
 		//innerTester.addKgsPostCheck(kgs);
-		innerTest.addKgsPostCheck();
+		innerTest.addKgsPostCheck(kgs);
 	}
 
 	public int getWeight() {
