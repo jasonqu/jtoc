@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * used for test
+ * used for MethodInfo, PreAnnotation, PostAnnotation's test
  * 
  * @author Goddamned Qu
  */

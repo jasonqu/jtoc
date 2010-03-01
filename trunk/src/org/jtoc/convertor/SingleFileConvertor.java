@@ -72,11 +72,13 @@ public class SingleFileConvertor extends UnitConvertor<ClassInfo>  {
 				+ outputFile.getAbsolutePath());
 		
 		this.init();
-
+		
+		Scanner in = null;
+		PrintWriter out = null;
 		try {
-			Scanner in = new Scanner(new FileReader(inputFile));
-			//PrintWriter out = new PrintWriter(System.out, true);
-			PrintWriter out = new PrintWriter(new FileOutputStream(outputFile), true);
+			in = new Scanner(new FileReader(inputFile));
+			// out = new PrintWriter(System.out, true);
+			out = new PrintWriter(new FileOutputStream(outputFile), true);
 			
 			CompilationUnit cu = null;
 			cu = japa.parser.JavaParser
@@ -102,44 +104,12 @@ public class SingleFileConvertor extends UnitConvertor<ClassInfo>  {
 					out.println(line);
 				}
 			}
-			
-			in.close();
-			out.close();
 		} catch (Exception e) {
 			logger.error("Exception occurs, converting stops : ", e);
 			throw e;
 		}finally{
-//			out.close();
+			in.close();
+			out.close();
 		}
 	}
-	
-	public static void main(String[] args) throws Exception {
-		File root = new File(".");
-		System.out.println(root.getCanonicalPath());
-		File origin = new File(root.getCanonicalPath()+"/files/original/src/jtoc/test/Person.java");
-		File generated = new File(root.getCanonicalPath()+"/files/generated/src/jtoc/test/Person.java");
-
-		SingleFileConvertor sc = new SingleFileConvertor();
-		sc.convert(origin, generated);
-//		sc.convert(
-//				"D:/Project/Jtoc/Project_SVN/JtocInput/src/junit/samples/money/Money.java",
-//				"D:/Project/Jtoc/Project_SVN/JtocOutput/src/junit/samples/money/Money.java");
-
-//		sc.convert(
-//				"D:/Project/Jtoc/Project/JtocInput/src/jtoc/test/Person.java",
-//				"D:/Project/Jtoc/Project/JtocOutput/src/jtoc/test/Person.java");
-
-//		sc.convert(
-//				"./test/org/jtoc/convertor/cpunit/InnerTestAnnoTest.java",
-//				"D:/Project/Jtoc/Project/JtocOutput/src/jtoc/test/Person.java");
-
-//		File dir = new File("D:/Project/Jtoc/Project/Jtoc/test/org/jtoc/convertor/classConvertor/");
-//		for(File file : dir.listFiles())
-//		{
-//			sc.init();
-//			sc.convert(file, file);
-//		}
-	}
-
-
 }

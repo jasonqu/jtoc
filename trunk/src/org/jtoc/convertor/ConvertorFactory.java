@@ -20,10 +20,12 @@ package org.jtoc.convertor;
 import org.jtoc.convertor.cpunit.ClassInfo;
 import org.jtoc.convertor.cpunit.MethodInfo;
 
+/**
+ * the converter's factory
+ * 
+ * @author Goddamned Qu
+ */
 public class ConvertorFactory {
-
-	public ConvertorFactory() {
-	}
 	
 	public static ClassConvertor getClassConvertor(ClassInfo node){
 		return new ClassConvertor(node);

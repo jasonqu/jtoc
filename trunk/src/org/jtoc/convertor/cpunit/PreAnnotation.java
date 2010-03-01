@@ -58,7 +58,6 @@ public class PreAnnotation extends JtocAnnotation {
 	 */
 	public static PreAnnotation getPreAnnotationFromAnnoExpr(AnnotationExpr ae)
 			throws JtocFormatException {
-		// XXX need refactor
 		if (!isInstance(ae))
 			return null;
 		PreAnnotation pa = new PreAnnotation(ae);

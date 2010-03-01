@@ -151,7 +151,6 @@ public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 	 */
 	@SuppressWarnings("static-access")
 	public void parse() throws JtocFormatException {
-		// XXX need refactor
 		String content = this.unit.toString();
 		
 		logger.debug("Begin parse : "+content);

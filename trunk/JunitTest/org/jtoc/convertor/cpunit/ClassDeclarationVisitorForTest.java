@@ -11,11 +11,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * used for test
+ * used for InnerTestAnnotation, ClassInfo's test
  * 
  * @author Goddamned Qu
  */
-public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
+public class ClassDeclarationVisitorForTest extends VoidVisitorAdapter<Object> {
 
 	private static Log logger = LogFactory.getLog(MethodVisitor.class);
 
@@ -31,8 +31,32 @@ public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 	/** the annotation expression counter */
 	int index = 0;
 	
+	/** ArrayList that contains the ClassInfos */
+	ArrayList<ClassInfo> classInfos = new ArrayList<ClassInfo>();
+	/** Arraylist for the ClassInfo parse exception messages */
+	ArrayList<String> classErrMessages = new ArrayList<String>();
+	
+	/** ArrayList for the right parsed ClassInfo's indexes */
+	ArrayList<Integer> classIndexSet = new ArrayList<Integer>();
+
+	/** the class counter */
+	int count = 0;
+	
 	@Override
 	public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+		// Code for the ClassInfo test
+		try {
+			ClassInfo ci = new ClassInfo(n);
+			this.classInfos.add(ci);
+			ci.parse();
+			this.classIndexSet.add(count);
+		} catch (JtocException e) {
+			classErrMessages.add(e.getMessage());
+		} finally {
+			count++;
+		}
+		
+		// Code for the InnerTest test
 		List<AnnotationExpr> list = n.getAnnotations();
 		if (list == null) // the method has no annotation.
 			return;
@@ -53,6 +77,5 @@ public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 			annolist.add(ae);
 			index++;
 		}
-
 	}
 }

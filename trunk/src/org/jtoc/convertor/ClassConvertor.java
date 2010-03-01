@@ -120,14 +120,14 @@ public class ClassConvertor extends UnitConvertor<ClassInfo> {
 			return;
 		}
 		
-		Matcher matcher = RegPatternFactory.Instance().getPattern("}").matcher(
+		Matcher matcher = RegPatternFactory.instance().getPattern("}").matcher(
 				line);
 		if (matcher.matches()) {
 			this.printStatements(out, matcher.group(1) + '\t');
 			out.println(line);
 		} else {
 			// which requires "}" must be the last non-white char in this line
-			matcher = RegPatternFactory.Instance().getPattern("Code}").matcher(
+			matcher = RegPatternFactory.instance().getPattern("Code}").matcher(
 					line);
 			if (matcher.matches()) {
 				out.println(matcher.group(1));

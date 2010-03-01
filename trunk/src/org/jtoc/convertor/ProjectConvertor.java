@@ -38,7 +38,7 @@ public class ProjectConvertor {
 	
 	private static Log logger = LogFactory.getLog(ProjectConvertor.class);
 
-	// inspired by org.apache.tools.ant.DirectoryScanner
+	/** inspired by org.apache.tools.ant.DirectoryScanner */
 	private static final String[] defaultExcludes = new String[] {
 		"CVS", ".cvsignore", // CVS
 		"SCCS", // SCCS
@@ -47,13 +47,32 @@ public class ProjectConvertor {
 		".DS_Store" // Mac
 	};
 	
+	/**
+	 * check whether the file should be converted or copied
+	 * 
+	 * @param filename
+	 *            the input filename
+	 * @return true if should be, false otherwise
+	 */
 	static boolean shouldExclude(String filename) {
 		for (String exclude : defaultExcludes)
 			if (exclude.equalsIgnoreCase(filename))
 				return true;
 		return false;
 	}
-	
+
+	/**
+	 * convert all file in the inputDir into the outputDir
+	 * 
+	 * @param inputDir
+	 *            the location of the project to be converted
+	 * @param outputDir
+	 *            the desired location where the converted files to be located
+	 * @param forceRewrite
+	 *            true if we would like to rewrite all files, otherwise the
+	 *            Converter would only rewrite the files that are out-dated.
+	 * @throws Exception
+	 */
 	private static void convert(File inputDir, File outputDir,
 			boolean forceRewrite) throws Exception {
 		if(shouldExclude(inputDir.getName()))
@@ -89,11 +108,33 @@ public class ProjectConvertor {
 			}
 		}
 	}
-	
+
+	/**
+	 * convert all file in the inputDir into the outputDir, only rewrite the
+	 * out-dated files
+	 * 
+	 * @param inputDir
+	 *            the location of the project to be converted
+	 * @param outputDir
+	 *            the desired location where the converted files to be located
+	 * @throws Exception
+	 */
 	public static void convertProject(File inputDir, File outputDir) throws Exception {
 		ProjectConvertor.convertProject(inputDir, outputDir, false);
 	}
 	
+	/**
+	 * a wrap for the convert method in order to print infos
+	 * 
+	 * @param inputDir
+	 *            the location of the project to be converted
+	 * @param outputDir
+	 *            the desired location where the converted files to be located
+	 * @param forceRewrite
+	 *            true if we would like to rewrite all files, otherwise the
+	 *            Converter would only rewrite the files that are out-dated.
+	 * @throws Exception
+	 */
 	public static void convertProject(File inputDir, File outputDir,
 			boolean forceRewrite) throws Exception {
 		logger.info("Begin Jtoc Project Convertion:");
@@ -106,13 +147,16 @@ public class ProjectConvertor {
 
 	/**
 	 * directly copy the file to the dest directory
-	 * @param srcFile the source file
-	 * @param destFile the destination file
+	 * 
+	 * @param srcFile
+	 *            the source file
+	 * @param destFile
+	 *            the destination file
 	 * @throws IOException
 	 */
 	private static void copyfile(File srcFile, File destFile)
 			throws IOException {
-		// XXX need refactor
+		// XXX need refactor to be more effective
 		if(shouldExclude(srcFile.getName()))
 			return;
 		
@@ -168,6 +212,9 @@ public class ProjectConvertor {
 		}
 	}
 
+	/**
+	 * print the usage infomation
+	 */
 	private static void usage() {
 		System.out.println("Usage: java -jar jtoc.jar [parameters]");
 		System.out.println("where parameters include:");
