@@ -132,6 +132,7 @@ public abstract class JtocNode<C extends Node> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(32);
+		sb.append(this.getClass().getName());
 		sb.append(" BeginLine:");
 		sb.append(this.getBeginLine());
 		sb.append(" EndLine:");

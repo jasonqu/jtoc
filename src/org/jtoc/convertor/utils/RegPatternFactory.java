@@ -38,7 +38,7 @@ public class RegPatternFactory {
 	 * 
 	 * @return the single instance of this factory
 	 */
-	public static RegPatternFactory Instance(){
+	public static RegPatternFactory instance(){
 		if(rpf == null)
 			rpf = new RegPatternFactory();
 		return rpf;

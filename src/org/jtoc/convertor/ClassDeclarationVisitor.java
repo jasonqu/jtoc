@@ -17,22 +17,27 @@
 
 package org.jtoc.convertor;
 
-import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jtoc.convertor.cpunit.ClassInfo;
 import org.jtoc.convertor.cpunit.JtocException;
 import org.jtoc.convertor.cpunit.JtocNode;
 
+/**
+ * @author Goddamned Qu
+ *
+ */
 public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 
-	//private static Logger logger = Logger.getLogger(ClassDeclarationVisitor.class.getName());
+	private static Log logger = LogFactory.getLog(ClassDeclarationVisitor.class.getName());
 
+	/** ArrayList that contains the ClassInfos */
 	private ArrayList<JtocNode> classInfos = new ArrayList<JtocNode>();
 
 	/**
@@ -86,31 +91,8 @@ public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 			this.classInfos.add(ci);
 			ci.parse();
 		} catch (JtocException e) {
-			System.err.println(e.getMessage());
+			logger.error(e.getMessage());
 			this.exceptionFlag = true;
 		}
 	}
-
-	/**
-	 * test method
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception{
-		// creates an input stream for the file to be parsed
-		FileInputStream in = new FileInputStream(
-				"D:/Project/Jtoc/Project/JtocInput/src/jtoc/test/Person.java");
-
-		CompilationUnit cu;
-		try {
-			// parse the file
-			cu = japa.parser.JavaParser.parse(in);
-		} finally {
-			in.close();
-		}
-
-		// visit and print the methods names
-		ClassDeclarationVisitor visitor = new ClassDeclarationVisitor("Person.java");
-		visitor.visit(cu, null);
-	}
-
 }

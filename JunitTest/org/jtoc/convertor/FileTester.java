@@ -38,7 +38,7 @@ public class FileTester{
 	@Test
 	public void testFileCompare() throws Exception {
 		ProjectConvertor.convertProject(originalDir, generatedDir, true);
-		//FileComparator.compare(expectedDir, generatedDir);
+		FileComparator.compare(expectedDir, generatedDir);
 		FileComparator.compare(generatedDir, expectedDir);
 		FileComparator.recurDelete(generatedDir);
 	}

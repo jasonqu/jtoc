@@ -114,7 +114,7 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 			if(index != -1){
 				logger.debug("deal with 'return' statement at " + lineNum);
 				
-				Matcher matcher = RegPatternFactory.Instance()
+				Matcher matcher = RegPatternFactory.instance()
 						.getPattern("returnValue").matcher(line);
 				if (matcher.find()){
 					int localIndent = this.getIndent(line);
@@ -134,7 +134,7 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 						
 						while (true) {
 							if (localIndent == 0
-									&& RegPatternFactory.Instance().getPattern(
+									&& RegPatternFactory.instance().getPattern(
 											"end;").matcher(line).find()) {
 								break;
 							}
@@ -151,7 +151,7 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 						logger.debug("line after sub : "+line);
 						while (true) {
 							if (localIndent == 0) {
-								matcher = RegPatternFactory.Instance()
+								matcher = RegPatternFactory.instance()
 										.getPattern("end;").matcher(line);
 								if (matcher.find()) {
 									logger.debug("Paras : "+this.unit.getPostAnno()
@@ -217,7 +217,7 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 			if (index != -1) {
 				logger.debug("deal with 'return' statement : ");
 
-				Matcher matcher = RegPatternFactory.Instance().getPattern(
+				Matcher matcher = RegPatternFactory.instance().getPattern(
 						"return;").matcher(line);
 				if (matcher.matches()) {
 					out.println(matcher.group(1) + '{'
@@ -226,7 +226,7 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 				} else {
 					// which requires "return;" must be the last non-white
 					// charSequence in this line
-					matcher = RegPatternFactory.Instance().getPattern(
+					matcher = RegPatternFactory.instance().getPattern(
 							"retWithPreCode").matcher(line);
 					if (matcher.find()) {
 						out.println(matcher.group(1));
@@ -257,7 +257,7 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 	 */
 	private void processLastLineVoid(Scanner in, PrintWriter out) {
 		line = this.getNextLine(in);
-		Matcher matcher = RegPatternFactory.Instance().getPattern("}").matcher(
+		Matcher matcher = RegPatternFactory.instance().getPattern("}").matcher(
 				line);
 		if (matcher.matches()) {
 			out.println(matcher.group(1) + '\t'
@@ -265,7 +265,7 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 			out.println(line);
 		} else {
 			// which requires "}" must be the last non-white char in this line
-			matcher = RegPatternFactory.Instance().getPattern("Code}").matcher(
+			matcher = RegPatternFactory.instance().getPattern("Code}").matcher(
 					line);
 			if (matcher.matches()) {
 				out.println(matcher.group(1));
@@ -296,14 +296,14 @@ public class MethodConvertor extends UnitConvertor<MethodInfo> {
 		
 		line = this.getNextLine(in);
 		
-		Matcher matcher = RegPatternFactory.Instance().getPattern("{").matcher(
+		Matcher matcher = RegPatternFactory.instance().getPattern("{").matcher(
 				line);
 		if (matcher.matches()) {
 			out.println(line);
 			out.println(matcher.group(1) + '\t'
 					+ this.unit.getPreAnno().getStatement(this.unit));
 		}else{
-			matcher = RegPatternFactory.Instance().getPattern("Code{").matcher(
+			matcher = RegPatternFactory.instance().getPattern("Code{").matcher(
 					line);
 			if(matcher.find()){
 				out.println(matcher.group(0));

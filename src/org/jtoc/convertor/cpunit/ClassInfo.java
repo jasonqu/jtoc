@@ -92,7 +92,7 @@ public class ClassInfo extends JtocNode<ClassOrInterfaceDeclaration> {
 		return nodes;
 	}
 
-	// used in validating the constraints
+	/** used in validating the constraints */
 	private ArrayList<String> classNames = new ArrayList<String>();
 	
 	/**
@@ -186,7 +186,7 @@ public class ClassInfo extends JtocNode<ClassOrInterfaceDeclaration> {
 		logger.debug(list);
 		if (list == null)
 			return null;
-		
+	
 		for(AnnotationExpr ae : list)
 			if(InnerTestAnnotation.isInstance(ae))
 				return InnerTestAnnotation.getInnerTestAnnotationFromAnnoExpr(ae);

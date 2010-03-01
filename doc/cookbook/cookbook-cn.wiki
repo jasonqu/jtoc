@@ -1,4 +1,4 @@
-#summary Jtoc的简单介绍.
+﻿#summary Jtoc的简单介绍.
 #labels Jtoc,Java,designbycontract
 
 =Jtoc Cookbook 中文版=

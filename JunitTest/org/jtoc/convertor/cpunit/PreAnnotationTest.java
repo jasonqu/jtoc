@@ -26,12 +26,9 @@ public class PreAnnotationTest {
 	/**	Arraylist for the AnnotationExpr */
 	static ArrayList<AnnotationExpr> annolist = new ArrayList<AnnotationExpr>();
 	
-	// XXX might be useless
 	/**	Arraylist for the PreAnnotation */
 	static ArrayList<PreAnnotation> prelist = new ArrayList<PreAnnotation>();
-	/**	Arraylist for the PreAnnotation parse exception messages*/
-	static ArrayList<String> prelistmessages = new ArrayList<String>();
-	
+
 	/** ArrayList for the PreAnnotation indexes */
 	static ArrayList<Integer> preindexes = new ArrayList<Integer>();
 	
@@ -69,7 +66,6 @@ public class PreAnnotationTest {
 		annolist = visitor.annolist;
 		prelist = visitor.prelist;
 		assertEquals(9, prelist.size());
-		prelistmessages = visitor.prelistmessages;
 		methodlist = visitor.methodlist;
 		
 		int[] indexes = new int[] { 0, 3, 5, 6, 8, 10, 12, 14, 16, 18 };

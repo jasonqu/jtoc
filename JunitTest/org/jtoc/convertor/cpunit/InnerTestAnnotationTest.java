@@ -51,7 +51,7 @@ public class InnerTestAnnotationTest {
 
 		// visit and print the methods names
 		JtocNode.setFilename("InnerTestAnnoTest.java");
-		ClassDeclarationVisitor visitor = new ClassDeclarationVisitor();
+		ClassDeclarationVisitorForTest visitor = new ClassDeclarationVisitorForTest();
 		visitor.visit(cu, null);
 		
 		annolist = visitor.annolist;
@@ -236,9 +236,9 @@ public class InnerTestAnnotationTest {
 
 		// visit and print the methods names
 		JtocNode.setFilename("InnerTestAnnoTest.java");
-		ClassDeclarationVisitor visitor = new ClassDeclarationVisitor();
+		ClassDeclarationVisitorForTest visitor = new ClassDeclarationVisitorForTest();
 		visitor.visit(cu, null);
-		
+
 		System.out.println("The index array for testIsInstance :");
 		for(Integer i : visitor.innerAnnoSet)
 			System.out.print(i+" ");

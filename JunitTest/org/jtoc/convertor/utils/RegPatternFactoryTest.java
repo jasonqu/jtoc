@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.jtoc.convertor.utils;
 
 import static org.junit.Assert.assertEquals;
@@ -15,8 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author QGD
- *
+ * @author Goddamned Qu
  */
 public class RegPatternFactoryTest{
 	
@@ -28,6 +24,7 @@ public class RegPatternFactoryTest{
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		factory = RegPatternFactory.instance();
 	}
 
 	/**
@@ -42,7 +39,6 @@ public class RegPatternFactoryTest{
 	 */
 	@Before
 	public void setUp() throws Exception {
-		factory = RegPatternFactory.Instance();
 	}
 
 	/**
