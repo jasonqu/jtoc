@@ -1,3 +1,7 @@
+== Version 0.2.0: Released Mar 9 2010 ==
+  * ungracefully solved [http://code.google.com/p/jtoc/issues/detail?id=1 issue1] in ProjectConvertor.java
+  * the unit test code coverage is up to 84.8%
+
 == Version 0.1.3: Released Jan 26 2010 ==
   * add the quickstart document
   * find [http://code.google.com/p/jtoc/issues/detail?id=1 issue1]
