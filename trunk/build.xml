@@ -81,7 +81,7 @@
 		</javac>
 	</target>
 
-	<target name="test" depends="compile-tests">
+	<target name="test" depends="compile-tests" description="--> Run all tests.">
 		<mkdir dir="${report.dir}" />
 		<junit haltonerror="${test.failonerror}">
 			<classpath refid="classpath" />
@@ -125,7 +125,8 @@
 	<!-- the file must have a property named "googlecode.password" -->
 	<property file="../googlecode-user.properties" />
 
-	<target name="upload-bin" depends="create-bin-zipfile">
+	<target name="upload-bin" depends="create-bin-zipfile"
+		description="--> Upload the binary zip file onto google code.">
 		<gcupload
 			username="${googlecode.user}"
 			password="${googlecode.password}"
@@ -133,10 +134,11 @@
 			filename="${zipfile.path}"
 			targetfilename="${zipfile.name}"
 			summary="${googlecode.file.summary} (binary)"
-			labels="${googlecode.file.labels}" />
+			labels="${googlecode.binfile.labels}" />
 	</target>
 	
-	<target name="upload-src" depends="create-src-zipfile">
+	<target name="upload-src" depends="create-src-zipfile"
+		description="--> Upload the source zip file onto google code.">
 		<gcupload
 			username="${googlecode.user}"
 			password="${googlecode.password}"
@@ -144,10 +146,11 @@
 			filename="${srczipfile.path}"
 			targetfilename="${srczipfile.name}"
 			summary="${googlecode.file.summary} (source)"
-			labels="${googlecode.file.labels}" />
+			labels="${googlecode.srcfile.labels}" />
 	</target>
-	
-	<target name="deploy">
+
+	<target name="deploy"
+		description="--> Create the binary and source zip file, then Upload them onto google code.">
 		<antcall target="clean-all" />
 		<antcall target="upload-bin" />
 		<antcall target="upload-src" />
