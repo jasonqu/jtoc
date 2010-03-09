@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Goddamned Qu
  */
+@SuppressWarnings("unchecked")
 public class ClassInfo extends JtocNode<ClassOrInterfaceDeclaration> {
 
 	private static Log logger = LogFactory.getLog(ClassInfo.class);

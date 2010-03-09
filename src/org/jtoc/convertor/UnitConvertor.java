@@ -30,6 +30,7 @@ import org.jtoc.convertor.cpunit.JtocNode;
  * 
  * @author Goddamned Qu
  */
+@SuppressWarnings("unchecked")
 public abstract class UnitConvertor<C extends JtocNode> {
 	
 	private static Log logger = LogFactory.getLog(UnitConvertor.class);

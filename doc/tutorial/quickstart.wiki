@@ -181,7 +181,7 @@ public class ArrayDivider {
 	@Pre @Post
 	public int[] divide(int[] xarray, int[] yarray){
 		int[] result = new int[xarray.length];
-		for(int i = 0; i&lt;xarray.length; i++ )
+		for(int i = 0; i < xarray.length; i++ )
 			result[i] = new Divider().divide(xarray[i], yarray[i]);
 		return result;
 	}
@@ -193,7 +193,7 @@ public class ArrayDivider {
 		}
 		
 		public int[] dividePostCheck(final int[] result, int[] xarray, int[] yarray){
-			for(int i = 0; i&lt;xarray.length; i++ )
+			for(int i = 0; i < xarray.length; i++ )
 				assertEquals("", result[i], xarray[i]/yarray[i]);
 			return result;
 		}
