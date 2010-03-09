@@ -33,6 +33,7 @@ import org.jtoc.convertor.cpunit.JtocNode;
  * @author Goddamned Qu
  *
  */
+@SuppressWarnings("unchecked")
 public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 
 	private static Log logger = LogFactory.getLog(ClassDeclarationVisitor.class.getName());

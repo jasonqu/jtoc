@@ -67,6 +67,7 @@ public class SingleFileConvertor extends UnitConvertor<ClassInfo>  {
 	 *            the output file
 	 * @throws Exception 
 	 */
+	@SuppressWarnings("static-access")
 	public void convert(File inputFile, File outputFile) throws Exception {
 		logger.info("convert form file " + inputFile.getName() + " to "
 				+ outputFile.getAbsolutePath());
