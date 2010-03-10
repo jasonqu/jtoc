@@ -126,7 +126,7 @@ public class Divider {
 Now, we can see that, without learning new grammar, the contracts are added to the class Divider. Now try the unit test, it works as well; so here is one advantage of jtoc: if you write the contracts right, it will not break you original unit tests.</p>
 
 <p>
-P.S Some may wondered why we generated the source files rather than directly generated the class files? The reason is that the programmers need an easy way to trace the failed test, and it would be better if there are source file to refer to; however, if the programmers do not want to see the generated source files, it is not hard to write an ant target to generate the class files directly. </p>
+P.S Some may wondered why we generated the source files rather than directly generated the class files? The reason is that the programmers need an easy way to trace the failed test, and it would be better if there are source file to refer to; however, if the programmers do not want to see the generated source files, it is not hard to write an ant target to generate the class files directly, like the jtoc-test target in the <a href="http://jtoc.googlecode.com/files/jtoc-quick-sample.zip">sample project</a>'s ant build file. </p>
 
 <p>
 Now we could add tests for `Divider` without considering the expected output, because the constraint we added by contracts would help us to restrain the software's behavior, which is another advantage of jtoc. Here is an example, notice we wisely avoid the 0 in the dividers because we know that not assign the divider to zero is the contract to apply in order to use this class</p>
@@ -221,6 +221,9 @@ public class ArrayDividerTest {
 
 <p>
 After we converted the project and run it... oops, an exception occured. The `Divider`'s contract is broken, and this error is easier to trace with the source code of the test project. </p>
+
+<p>
+The complete sample project could be found <a href="http://jtoc.googlecode.com/files/jtoc-quick-sample.zip">here</a> with a sample ant build file.</p>
 
 <p>
 This is the Quick Start over the jtoc, to know more and to customize yoour own contracts, please read jtoc's <a href="http://code.google.com/p/jtoc/wiki/cookbook">cookbook</a>. </p>
