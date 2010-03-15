@@ -71,7 +71,7 @@ public class Divider {
 }}}
 
 <p>
-现在我们需要使用jtoc来把工程重编译成一个测试工程，在那里这些契约将真正起到作用。首先我们需要编写这样一个ant构建文件[目前jtoc只提供了ant和控制台调用方式，其Eclipse插件正在开发中]:</P>
+现在我们需要使用jtoc来把工程重编译成一个测试工程，在那里这些契约将真正起到作用。首先我们需要编写这样一个ant构建文件[目前jtoc只提供了ant和控制台调用方式，其<a href="http://code.google.com/p/jtoc-eclipse-plugin/">Eclipse插件</a>正在开发中]:</P>
 
 {{{
 <?xml version="1.0" ?>

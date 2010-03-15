@@ -73,7 +73,7 @@ public class Divider {
 }}}
 
 <p>
-Now we need to use jtoc to convert this project into a test project where the contracts could actually work. We need to write a ant build file like this (now the invocation methods of jtoc is limited to ant and console, but the eclipse plugin is under development): </P>
+Now we need to use jtoc to convert this project into a test project where the contracts could actually work. We need to write a ant build file like this (now the invocation methods of jtoc is limited to ant and console, but <a href="http://code.google.com/p/jtoc-eclipse-plugin/">the eclipse plugin</a> is under development): </P>
 
 {{{
 <?xml version="1.0" ?>
