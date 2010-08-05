@@ -28,8 +28,6 @@ import org.jtoc.convertor.utils.RegPatternFactory;
 
 /**
  * class used to convert methods.
- * 
- * @author Goddamned Qu
  */
 public class MethodConvertor extends UnitConvertor<MethodInfo> {
 

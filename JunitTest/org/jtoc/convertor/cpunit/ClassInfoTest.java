@@ -12,10 +12,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * @author QGD
- *
- */
 public class ClassInfoTest {
 
 	/** ArrayList that contains the ClassInfos */

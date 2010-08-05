@@ -24,8 +24,6 @@ package org.jtoc.convertor.cpunit;
  * (FileName.java:123) Message content
  * </pre>
  * 
- * @author Goddamned Qu
- * 
  */
 public class JtocException extends Exception {
 	

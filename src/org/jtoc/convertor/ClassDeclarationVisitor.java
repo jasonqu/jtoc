@@ -29,10 +29,6 @@ import org.jtoc.convertor.cpunit.ClassInfo;
 import org.jtoc.convertor.cpunit.JtocException;
 import org.jtoc.convertor.cpunit.JtocNode;
 
-/**
- * @author Goddamned Qu
- *
- */
 @SuppressWarnings("unchecked")
 public class ClassDeclarationVisitor extends VoidVisitorAdapter<Object> {
 

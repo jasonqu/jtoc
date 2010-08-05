@@ -26,8 +26,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Class for information of the InnerTestAnnotation elements.
- * 
- * @author Goddamned Qu
  */
 public class InnerTestAnnotation extends JtocNode<AnnotationExpr> {
 

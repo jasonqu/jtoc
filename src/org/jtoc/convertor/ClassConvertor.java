@@ -29,8 +29,6 @@ import org.jtoc.convertor.utils.RegPatternFactory;
 
 /**
  * class used to convert classes.
- * 
- * @author Goddamned Qu
  */
 public class ClassConvertor extends UnitConvertor<ClassInfo> {
 

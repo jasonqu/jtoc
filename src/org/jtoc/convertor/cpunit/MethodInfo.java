@@ -28,8 +28,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * class used to contain information of the Methods.
- * 
- * @author Goddamned Qu
  */
 public class MethodInfo extends JtocNode<MethodDeclaration> {
 

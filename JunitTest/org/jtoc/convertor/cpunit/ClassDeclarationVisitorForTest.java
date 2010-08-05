@@ -12,8 +12,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * used for InnerTestAnnotation, ClassInfo's test
- * 
- * @author Goddamned Qu
  */
 public class ClassDeclarationVisitorForTest extends VoidVisitorAdapter<Object> {
 

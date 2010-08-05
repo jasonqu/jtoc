@@ -16,10 +16,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * @author QGD
- *
- */
 public class MethodInfoTest {
 	
 	/** Arraylist for the MethodInfo */
