@@ -31,8 +31,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * class used to convert a project.
- * 
- * @author Goddamned Qu
  */
 public class ProjectConvertor {
 	
@@ -222,7 +220,7 @@ public class ProjectConvertor {
 		System.out.println("       -d <Destination Project Directory>");
 		System.out.println("       -r : Rewrite all java files if specified");
 		System.out.println("            or only rewrite the modified files");
-		System.out.println("For Example£º");
+		System.out.println("For Example:");
 		System.out.println("       java -jar jtoc.jar -s . -d ../testProject/");
 		System.out.println(" Or");
 		System.out.println("       java -jar jtoc.jar -s \"D:\\Origin\" -d \"D:\\Test\" -r");

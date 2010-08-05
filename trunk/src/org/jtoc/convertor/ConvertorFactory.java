@@ -22,8 +22,6 @@ import org.jtoc.convertor.cpunit.MethodInfo;
 
 /**
  * the converter's factory
- * 
- * @author Goddamned Qu
  */
 public class ConvertorFactory {
 	

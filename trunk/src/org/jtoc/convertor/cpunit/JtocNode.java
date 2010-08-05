@@ -24,8 +24,6 @@ import japa.parser.ast.expr.StringLiteralExpr;
 
 /**
  * Abstract class used to contain information of the Jtoc elements.
- * 
- * @author Goddamned Qu
  */
 public abstract class JtocNode<C extends Node> {
 

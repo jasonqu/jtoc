@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.jtoc.convertor.cpunit;
 
 import static org.junit.Assert.*;
@@ -12,10 +9,6 @@ import java.util.ArrayList;
 
 import org.junit.*;
 
-/**
- * @author Goddamned Qu
- *
- */
 public class PostAnnotationTest {
 
 	/**	Arraylist for the AnnotationExpr */

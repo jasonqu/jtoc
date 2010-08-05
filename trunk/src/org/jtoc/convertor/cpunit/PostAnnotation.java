@@ -21,8 +21,6 @@ import japa.parser.ast.expr.AnnotationExpr;
 
 /**
  * class used to contain information of the Post Jtoc Annotation.
- * 
- * @author Goddamned Qu
  */
 public class PostAnnotation extends JtocAnnotation {
 

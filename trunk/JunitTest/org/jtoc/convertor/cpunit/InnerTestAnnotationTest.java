@@ -15,10 +15,6 @@ import java.util.List;
 
 import org.junit.*;
 
-/**
- * @author QGD
- *
- */
 public class InnerTestAnnotationTest {
 	
 	/** Arraylist for the AnnotationExpr */

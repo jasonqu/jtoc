@@ -32,8 +32,6 @@ import org.jtoc.convertor.cpunit.ClassInfo;
 
 /**
  * class used to convert a file.
- * 
- * @author Goddamned Qu
  */
 public class SingleFileConvertor extends UnitConvertor<ClassInfo>  {
 

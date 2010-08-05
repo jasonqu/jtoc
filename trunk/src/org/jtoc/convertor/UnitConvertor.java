@@ -27,8 +27,6 @@ import org.jtoc.convertor.cpunit.JtocNode;
 
 /**
  * Abstract class used to contain commen codes of the convertors.
- * 
- * @author Goddamned Qu
  */
 @SuppressWarnings("unchecked")
 public abstract class UnitConvertor<C extends JtocNode> {

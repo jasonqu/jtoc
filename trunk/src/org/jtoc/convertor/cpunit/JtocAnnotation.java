@@ -26,8 +26,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract class for information of the JtocAnnotation elements.
- * 
- * @author Goddamned Qu
  */
 public abstract class JtocAnnotation extends JtocNode<AnnotationExpr> {
 

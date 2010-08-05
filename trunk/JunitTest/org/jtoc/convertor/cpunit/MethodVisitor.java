@@ -12,8 +12,6 @@ import java.util.List;
 
 /**
  * used for MethodInfo, PreAnnotation, PostAnnotation's test
- * 
- * @author Goddamned Qu
  */
 public class MethodVisitor extends VoidVisitorAdapter<Object> {
 

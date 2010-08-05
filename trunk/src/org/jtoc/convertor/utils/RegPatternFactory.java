@@ -22,8 +22,6 @@ import java.util.regex.Pattern;
 
 /**
  * class used to get the Regular Expression Patterns, implemented by Singleton.
- * 
- * @author Goddamned Qu
  */
 public class RegPatternFactory {
 	

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.jtoc.convertor.cpunit;
 
 import static org.junit.Assert.assertTrue;
@@ -17,10 +14,6 @@ import java.util.List;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-/**
- * @author Goddamned Qu
- *
- */
 public class PreAnnotationTest {
 
 	/**	Arraylist for the AnnotationExpr */

@@ -30,8 +30,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract class for information of the ClassOrInterfaceDeclaration elements.
- * 
- * @author Goddamned Qu
  */
 @SuppressWarnings("unchecked")
 public class ClassInfo extends JtocNode<ClassOrInterfaceDeclaration> {
