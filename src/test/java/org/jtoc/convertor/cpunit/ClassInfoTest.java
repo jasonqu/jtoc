@@ -23,7 +23,7 @@ public class ClassInfoTest {
 	public static void setUpBeforeClass() throws Exception {
 		// creates an input stream for the file to be parsed
 		FileInputStream in = new FileInputStream(
-		"./files/test/ClassInfoValidationTest.java");
+				"src/test/files/test/ClassInfoValidationTest.java");
 
 		CompilationUnit cu;
 		try { // parse the file

@@ -28,7 +28,7 @@ public class MethodInfoTest {
 	public static void setUpBeforeClass() throws Exception {
 		// creates an input stream for the file to be parsed
 		FileInputStream in = new FileInputStream(
-				"./files/test/PrePostAnnoTest.java");
+				"src/test/files/test/PrePostAnnoTest.java");
 
 		CompilationUnit cu;
 		try { // parse the file

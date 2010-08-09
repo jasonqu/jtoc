@@ -36,7 +36,7 @@ public class InnerTestAnnotationTest {
 	public static void setUpBeforeClass() throws Exception {
 		// creates an input stream for the file to be parsed
 		FileInputStream in = new FileInputStream(
-		"./files/test/InnerTestAnnoTest.java");
+				"src/test/files/test/InnerTestAnnoTest.java");
 
 		CompilationUnit cu;
 		try { // parse the file

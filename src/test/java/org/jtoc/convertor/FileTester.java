@@ -20,11 +20,9 @@ public class FileTester{
 
 	@Before
 	public void setUp() throws Exception {
-		File root = new File(".");
-		System.out.println(root.getCanonicalPath());
-		expectedDir = new File(root.getCanonicalPath()+"/files/expected");
-		generatedDir = new File(root.getCanonicalPath()+"/files/generated");
-		originalDir = new File(root.getCanonicalPath()+"/files/original");
+		expectedDir = new File("src/test/files/expected");
+		generatedDir = new File("src/test/files/generated");
+		originalDir = new File("src/test/files/original");
 		
 		FileComparator.recurDelete(generatedDir);
 		generatedDir.mkdirs();
