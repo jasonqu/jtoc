@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Jtoc" default="test" basedir=".">
-	<property file="${basedir}/default.properties" />
+	<property file="${basedir}/src/main/config/default.properties" />
 
 	<path id="classpath">
 		<fileset dir="${lib.dir}">
