@@ -4,7 +4,7 @@
 
 	<groupId>com.google.code.jtoc</groupId>
 	<artifactId>jtoc</artifactId>
-	<version>0.2.1</version>
+	<version>0.2.2</version>
 	<packaging>jar</packaging>
 
 	<name>Java test oracle creator</name>
@@ -29,7 +29,7 @@
 
 	<scm>
 		<url>http://code.google.com/p/jtoc/source/browse/</url>
-		<connection>http://jtoc.googlecode.com/svn/trunk/</connection>
+		<connection>scm:svn:http://jtoc.googlecode.com/svn/trunk/</connection>
 	</scm>
 
 	<inceptionYear>2009</inceptionYear>
