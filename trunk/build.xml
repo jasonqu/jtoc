@@ -34,26 +34,12 @@
 
 	<target name="jar" depends="compile"
 		description="--> Generates the runnable jar file in the 'build' directory.">
-		<!-- Convert project class path to string property -->
-		<pathconvert property="mf.classpath" pathsep=" ">
-			<mapper>
-				<chainedmapper>
-					<!-- remove absolute path -->
-					<flattenmapper />
-					<!-- add lib/ prefix -->
-					<globmapper from="*" to="lib/*" />
-				</chainedmapper>
-			</mapper>
-			<path refid="classpath" />
-		</pathconvert>
-
 		<!-- Exclude unit tests from the final JAR file, ANT 1.7 is required -->
 		<jar destfile="${build.lib}/${zipfile.name}.jar" basedir="${build.classes}">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Created-By" value="${mf.created-by}" />
 				<attribute name="Main-Class" value="${mf.main-class}" />
-				<attribute name="Class-Path" value=". ${mf.classpath}" />
 			</manifest>
 		</jar>
 	</target>
@@ -100,7 +86,6 @@
 		description="--> Generates the binary zip file.">
 		<mkdir dir="${dist.dir}" />
 		<copy file="LICENSE.txt" todir="${build.lib}" />
-		<copy file="NOTICE.txt" todir="${build.lib}" />
 		<zip destfile="${zipfile.path}" basedir="${build.lib}">
 			<fileset dir=".">
 				<include name="${lib.dir}/**" />
