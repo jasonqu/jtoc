@@ -7,6 +7,9 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.jtoc.convertor.ProjectConvertor;
 
+/**
+ * The Ant task to convert project by using jtoc
+ */
 public class ConvertTask extends MatchingTask{
 	private File srcDir;
 	private File destDir;
@@ -39,6 +42,10 @@ public class ConvertTask extends MatchingTask{
 			throw new BuildException("destdir must be specified");
 		}
 		log("destDir = " + destDir, Project.MSG_DEBUG);
+		
+		if (destDir.getAbsolutePath().equals(srcDir.getAbsolutePath())) {
+			throw new BuildException("The srcdir and destdir must not be the same");
+		}
 
 		try {
 			ProjectConvertor.convertProject(srcDir, destDir, rewrite);
