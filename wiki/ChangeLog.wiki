@@ -1,3 +1,7 @@
+== Version 0.2.2: Released Aug 17 2010 ==
+  * use Apache Maven2 to build this project
+  * add a Maven plug-in to facilitate the Maven build: [http://code.google.com/p/maven-jtoc-plugin/]
+
 == Version 0.2.0: Released Mar 9 2010 ==
   * ungracefully solved [http://code.google.com/p/jtoc/issues/detail?id=1 issue1] in ProjectConvertor.java
   * the unit test code coverage is up to 84.8%
