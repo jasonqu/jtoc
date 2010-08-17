@@ -1,0 +1,26 @@
+#summary A Introduction about the Jtoc's Maven2 usage.
+#labels Phase-Deploy
+
+= Introduction =
+
+In order to use Jtoc from a Maven project, one need add this repository to pom.xml's repositories:
+
+{{{
+		<repository>
+			<id>Jtoc</id>
+			<name>Jtoc Repository</name>
+			<url>http://jtoc.googlecode.com/svn/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+}}}
+
+And add dependency in the dependencies: 
+{{{
+		<dependency>
+			<groupId>com.google.code.jtoc</groupId>
+			<artifactId>jtoc</artifactId>
+			<version>0.2.2</version>
+		</dependency>
+}}}
