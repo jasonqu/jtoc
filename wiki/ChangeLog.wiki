@@ -1,4 +1,5 @@
 == Version 0.2.2: Released Aug 17 2010 ==
+  * remove the Class-Path attribute from MANIFEST.MF
   * use Apache Maven2 to build this project
   * add a Maven plug-in to facilitate the Maven build: [http://code.google.com/p/maven-jtoc-plugin/]
 
