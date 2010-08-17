@@ -1,4 +1,5 @@
 #summary A Introduction about the Jtoc's Maven2 usage.
+#labels Featured,Phase-Implementation
 
 = Introduction =
 
